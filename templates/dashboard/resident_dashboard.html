@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>iAksyon | Resident Dashboard</title>
+</head>
+<body>
+
+    <h1>iAksyon</h1>
+    <h2>Resident Dashboard</h2>
+
+    <h3>Welcome, {{ user.first_name }}!</h3>
+
+    <p>Username: {{ user.username }}</p>
+    <p>Role: {{ user.get_role_display }}</p>
+
+    <hr>
+
+    <h3>Resident Services</h3>
+
+    <button disabled>Create Report</button>
+    <button disabled>View My Reports</button>
+    <button disabled>Check Report Status</button>
+    <a href="{% url 'profile' %}">My Profile</a>
+
+    <hr>
+
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Log out</button>
+    </form>
+
+</body>
+</html>

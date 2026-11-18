@@ -1,2 +1,34 @@
-{% extends "base.html" %}
-{% block content %}<h2>Admin Panel</h2>{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>iAksyon | Admin Dashboard</title>
+</head>
+<body>
+
+    <h1>iAksyon</h1>
+    <h2>Admin Dashboard</h2>
+
+    <h3>Welcome, {{ user.first_name }}!</h3>
+
+    <p>Username: {{ user.username }}</p>
+    <p>Role: {{ user.get_role_display }}</p>
+
+    <hr>
+
+    <h3>Report Management</h3>
+
+    <button disabled>View All Reports</button>
+    <button disabled>Update Report Status</button>
+    <button disabled>View Report Records</button>
+    <button disabled>Analytics Dashboard</button>
+
+    <hr>
+
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Log out</button>
+    </form>
+
+</body>
+</html>
