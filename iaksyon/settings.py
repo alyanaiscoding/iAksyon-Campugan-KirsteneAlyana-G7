@@ -10,10 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+from urllib.parse import urlparse, unquote
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
 
 # Quick-start development settings - unsuitable for production
@@ -72,11 +76,21 @@ WSGI_APPLICATION = 'iaksyon.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.1/ref/settings/#databases
+database_url = os.environ["DATABASE_URL"]
+db = urlparse(database_url)
+
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": unquote(db.path.lstrip("/")),
+        "USER": unquote(db.username),
+        "PASSWORD": unquote(db.password),
+        "HOST": db.hostname,
+        "PORT": db.port or 5432,
+        "OPTIONS": {
+            "sslmode": "require",
+        },
     }
 }
 
