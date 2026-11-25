@@ -26,3 +26,8 @@ class ReportForm(forms.ModelForm):
                 "placeholder": "Enter the location of the issue"
             }),
         }
+
+class ReportStatusForm(forms.ModelForm):
+    class Meta:
+        model = Report
+        fields = ["status"]

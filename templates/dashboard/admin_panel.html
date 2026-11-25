@@ -19,8 +19,12 @@
     <h3>Report Management</h3>
 
     <button disabled>View All Reports</button>
-    <button disabled>Update Report Status</button>
-    <button disabled>View Report Records</button>
+    <a href="{% url 'admin_report_list' %}">
+        Update Status
+    </a>
+    <a href="{% url 'admin_report_list' %}">
+        View Reports
+    </a>
     <button disabled>Analytics Dashboard</button>
 
     <hr>
