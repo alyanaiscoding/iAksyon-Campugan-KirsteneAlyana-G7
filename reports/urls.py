@@ -3,7 +3,8 @@ from .views import (
     ReportCreateView,
     ReportListView,
     ReportUpdateView,
-    ReportDeleteView
+    ReportDeleteView,
+    AdminReportListView
 )
 
 urlpatterns = [
@@ -26,5 +27,10 @@ urlpatterns = [
         "<int:pk>/delete/",
         ReportDeleteView.as_view(),
         name="report_delete"
+    ),
+    path(
+    "manage/",
+    AdminReportListView.as_view(),
+    name="admin_report_list"
     ),
 ]

@@ -107,3 +107,20 @@ class ReportDeleteView(
             "Report deleted successfully!"
         )
         return response
+
+class AdminReportListView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    ListView
+):
+    model = Report
+    template_name = "reports/admin_report_list.html"
+    context_object_name = "reports"
+
+    def test_func(self):
+        return self.request.user.role == CustomUser.Role.ADMIN
+
+    def get_queryset(self):
+        return Report.objects.select_related(
+            "resident"
+        ).order_by("-created_at")
