@@ -29,6 +29,12 @@
 
         <p><strong>Date Submitted:</strong> {{ report.created_at|date:"F d, Y - h:i A" }}</p>
 
+        {% if report.status == "PENDING" %}
+            <a href="{% url 'report_update' report.pk %}">
+                Edit Report
+            </a>
+        {% endif %}
+
         <hr>
 
     {% empty %}
