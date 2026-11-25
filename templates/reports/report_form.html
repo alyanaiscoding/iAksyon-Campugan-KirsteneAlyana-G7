@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Report | iAksyon</title>
+</head>
+<body>
+
+    <h1>Submit a Report</h1>
+
+    <p>Report an issue in your community.</p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">Submit Report</button>
+    </form>
+
+    <br>
+
+    <a href="{% url 'resident_dashboard' %}">
+        Back to Dashboard
+    </a>
+
+</body>
+</html>
