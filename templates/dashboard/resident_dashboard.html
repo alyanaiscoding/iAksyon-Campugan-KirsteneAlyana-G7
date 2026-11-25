@@ -5,6 +5,13 @@
     <title>iAksyon | Resident Dashboard</title>
 </head>
 <body>
+    {% if messages %}
+    {% for message in messages %}
+        <p role="status" style="color: green;">
+            {{ message }}
+        </p>
+    {% endfor %}
+    {% endif %}
 
     <h1>iAksyon</h1>
     <h2>Resident Dashboard</h2>
@@ -18,9 +25,9 @@
 
     <h3>Resident Services</h3>
 
-    <button disabled>Create Report</button>
-    <button disabled>View My Reports</button>
-    <button disabled>Check Report Status</button>
+    <a href="{% url 'report_create' %}">Create Report</a>
+    <a href="{% url 'report_list' %}">View My Reports</a>
+    <a href="{% url 'report_list' %}">Check Report Status</a>
     <a href="{% url 'profile' %}">My Profile</a>
 
     <hr>
