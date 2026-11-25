@@ -1,6 +1,9 @@
 from django.urls import path
-from .views import ReportCreateView, ReportListView
-
+from .views import (
+    ReportCreateView,
+    ReportListView,
+    ReportUpdateView
+)
 
 urlpatterns = [
     path(
@@ -12,5 +15,10 @@ urlpatterns = [
         "my-reports/",
         ReportListView.as_view(),
         name="report_list"
+    ),
+    path(
+        "<int:pk>/edit/",
+        ReportUpdateView.as_view(),
+        name="report_update"
     ),
 ]
