@@ -8,7 +8,7 @@ from django.views.generic import CreateView
 from django.views.generic import ListView
 from accounts.models import CustomUser
 from .models import Report
-from .forms import ReportForm
+from .forms import ReportForm, ReportStatusForm
 from django.views.generic import UpdateView
 from django.views.generic import DeleteView 
 
@@ -124,3 +124,24 @@ class AdminReportListView(
         return Report.objects.select_related(
             "resident"
         ).order_by("-created_at")
+
+class AdminReportUpdateView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    UpdateView
+):
+    model = Report
+    form_class = ReportStatusForm
+    template_name = "reports/admin_report_detail.html"
+    success_url = reverse_lazy("admin_report_list")
+
+    def test_func(self):
+        return self.request.user.role == CustomUser.Role.ADMIN
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(
+            self.request,
+            "Report status updated successfully!"
+        )
+        return response

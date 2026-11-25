@@ -6,13 +6,17 @@
     <title>Manage Reports | iAksyon</title>
 </head>
 <body>
+    {% if messages %}
+    {% for message in messages %}
+        <p role="status" style="color: green;">
+            {{ message }}
+        </p>
+    {% endfor %}
+    {% endif %}
 
     <h1>Manage Reports</h1>
-
     <p>View community issues submitted by residents.</p>
-
     <p>Total Reports: {{ reports|length }}</p>
-
     <table border="1" cellpadding="10">
         <thead>
             <tr>
@@ -28,7 +32,11 @@
         <tbody>
             {% for report in reports %}
                 <tr>
-                    <td>{{ report.title }}</td>
+                    <td>
+                        <a href="{% url 'admin_report_update' report.pk %}">
+                            {{ report.title }}
+                        </a>
+                    </td>
                     <td>{{ report.resident.username }}</td>
                     <td>{{ report.get_category_display }}</td>
                     <td>{{ report.location }}</td>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Details | iAksyon</title>
+</head>
+<body>
+
+    <h1>Report Details</h1>
+
+    <p><strong>Title:</strong> {{ object.title }}</p>
+
+    <p><strong>Resident:</strong> {{ object.resident.username }}</p>
+
+    <p><strong>Description:</strong> {{ object.description }}</p>
+
+    <p><strong>Category:</strong> {{ object.get_category_display }}</p>
+
+    <p><strong>Location:</strong> {{ object.location }}</p>
+
+    <p><strong>Current Status:</strong> {{ object.get_status_display }}</p>
+
+    <p><strong>Date Submitted:</strong> {{ object.created_at }}</p>
+
+    <hr>
+
+    <h2>Update Report Status</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">Update Status</button>
+    </form>
+
+    <br>
+
+    <a href="{% url 'admin_report_list' %}">
+        Back to Reports
+    </a>
+
+</body>
+</html>
