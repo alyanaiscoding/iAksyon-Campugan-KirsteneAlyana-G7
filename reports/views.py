@@ -10,6 +10,7 @@ from accounts.models import CustomUser
 from .models import Report
 from .forms import ReportForm
 from django.views.generic import UpdateView
+from django.views.generic import DeleteView 
 
 
 class ReportCreateView(
@@ -78,5 +79,31 @@ class ReportUpdateView(
         messages.success(
             self.request,
             "Report updated successfully!"
+        )
+        return response
+
+class ReportDeleteView(
+    LoginRequiredMixin,
+    UserPassesTestMixin,
+    DeleteView
+):
+    model = Report
+    template_name = "reports/report_confirm_delete.html"
+    success_url = reverse_lazy("report_list")
+
+    def test_func(self):
+        return self.request.user.role == CustomUser.Role.RESIDENT
+
+    def get_queryset(self):
+        return Report.objects.filter(
+            resident=self.request.user,
+            status=Report.Status.PENDING
+        )
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(
+            self.request,
+            "Report deleted successfully!"
         )
         return response
