@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import (
 )
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
-
+from django.views.generic import ListView
 from accounts.models import CustomUser
 from .models import Report
 from .forms import ReportForm
@@ -35,3 +35,20 @@ class ReportCreateView(
         )
 
         return response
+    
+class ReportListView(
+LoginRequiredMixin,
+UserPassesTestMixin,
+ListView
+):
+    model = Report
+    template_name = "reports/report_list.html"
+    context_object_name = "reports"
+
+    def test_func(self):
+        return self.request.user.role == CustomUser.Role.RESIDENT
+
+    def get_queryset(self):
+        return Report.objects.filter(
+            resident=self.request.user
+        ).order_by("-created_at")
