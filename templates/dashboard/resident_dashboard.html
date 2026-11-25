@@ -5,6 +5,13 @@
     <title>iAksyon | Resident Dashboard</title>
 </head>
 <body>
+    {% if messages %}
+    {% for message in messages %}
+        <p role="status" style="color: green;">
+            {{ message }}
+        </p>
+    {% endfor %}
+    {% endif %}
 
     <h1>iAksyon</h1>
     <h2>Resident Dashboard</h2>
