@@ -16,7 +16,7 @@ from django.views.generic import (
 )
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.db.models.functions import TruncMonth
 from accounts.models import CustomUser
 from .models import Report
@@ -66,9 +66,45 @@ class ReportListView(
         return self.request.user.role == CustomUser.Role.RESIDENT
 
     def get_queryset(self):
-        return Report.objects.filter(
+        queryset = Report.objects.filter(
             resident=self.request.user
         ).order_by("-created_at")
+
+        self.resident_reports = queryset
+        self.search_query = self.request.GET.get("q", "").strip()
+        self.status_filter = self.request.GET.get("status", "").strip()
+        self.category_filter = self.request.GET.get("category", "").strip()
+
+        if self.search_query:
+            queryset = queryset.filter(
+                Q(title__icontains=self.search_query)
+                | Q(location__icontains=self.search_query)
+            )
+
+        valid_statuses = {value for value, _ in Report.Status.choices}
+        valid_categories = {value for value, _ in Report.Category.choices}
+        if self.status_filter in valid_statuses:
+            queryset = queryset.filter(status=self.status_filter)
+        if self.category_filter in valid_categories:
+            queryset = queryset.filter(category=self.category_filter)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        reports = self.resident_reports
+        context.update({
+            "total_reports": reports.count(),
+            "pending_reports": reports.filter(status=Report.Status.PENDING).count(),
+            "in_progress_reports": reports.filter(status=Report.Status.IN_PROGRESS).count(),
+            "resolved_reports": reports.filter(status=Report.Status.RESOLVED).count(),
+            "search_query": self.search_query,
+            "status_filter": self.status_filter,
+            "category_filter": self.category_filter,
+            "category_choices": Report.Category.choices,
+            "has_filters": bool(self.search_query or self.status_filter or self.category_filter),
+        })
+        return context
 
 
 # RESIDENT - UPDATE REPORT

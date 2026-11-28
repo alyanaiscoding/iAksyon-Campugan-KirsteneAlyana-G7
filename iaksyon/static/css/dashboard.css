@@ -10,7 +10,7 @@
 
 .dashboard-shell {
     display: flex;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 28px;
     min-height: 100vh;
     max-width: 1800px;
@@ -137,9 +137,9 @@
 .dashboard-main {
     display: flex;
     flex-direction: column;
-    flex: 1;
+    flex: 1 1 auto;
     min-width: 0;
-    min-height: calc(100vh - 48px);
+    min-height: 0;
 }
 
 .dashboard-content {
@@ -243,7 +243,7 @@
     flex-wrap: wrap;
     gap: 12px;
 
-    margin-top: 32px;
+    margin-top: auto;
     padding: 20px 4px 4px;
 
     border-top: 1px solid var(--border);
@@ -270,7 +270,7 @@
     }
 
     .dashboard-main {
-        min-height: calc(100vh - 36px);
+        min-height: 0;
     }
 
 }

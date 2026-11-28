@@ -1,66 +1,65 @@
+{% extends "layouts/dashboard.html" %}
+{% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Reports | iAksyon</title>
-</head>
-<body>
-    {% if messages %}
-        {% for message in messages %}
-            <p role="status" style="color: green;">
-                {{ message }}
-            </p>
+{% block title %}iAksyon | My Reports{% endblock %}
+{% block body_class %}dashboard-body resident-dashboard-body report-list-body{% endblock %}
+{% block dashboard_css %}<link rel="stylesheet" href="{% static 'css/report_list.css' %}">{% endblock %}
+{% block page_title %}My Reports{% endblock %}
+{% block page_subtitle %}Track and manage your submitted community reports.{% endblock %}
+
+{% block dashboard_content %}
+<div class="report-list-page">
+    <div class="report-list-actions"><a href="{% url 'report_create' %}" class="btn btn-primary"><i data-lucide="plus" aria-hidden="true"></i>Create Report</a></div>
+
+    <section class="report-list-summary" aria-label="Report summary">
+        <article class="list-summary-card list-total"><span class="list-summary-icon"><i data-lucide="clipboard-list"></i></span><p>Total Reports</p><strong>{{ total_reports }}</strong><svg class="list-card-wave" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 29 Q48 8 98 22 T200 14 V40 H0Z"/><path d="M0 36 Q55 23 110 33 T200 29 V40 H0Z"/></svg></article>
+        <article class="list-summary-card list-pending"><span class="list-summary-icon"><i data-lucide="clock-3"></i></span><p>Pending</p><strong>{{ pending_reports }}</strong><svg class="list-card-wave" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 29 Q48 8 98 22 T200 14 V40 H0Z"/><path d="M0 36 Q55 23 110 33 T200 29 V40 H0Z"/></svg></article>
+        <article class="list-summary-card list-progress"><span class="list-summary-icon"><i data-lucide="loader-circle"></i></span><p>In Progress</p><strong>{{ in_progress_reports }}</strong><svg class="list-card-wave" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 29 Q48 8 98 22 T200 14 V40 H0Z"/><path d="M0 36 Q55 23 110 33 T200 29 V40 H0Z"/></svg></article>
+        <article class="list-summary-card list-resolved"><span class="list-summary-icon"><i data-lucide="circle-check"></i></span><p>Resolved</p><strong>{{ resolved_reports }}</strong><svg class="list-card-wave" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 29 Q48 8 98 22 T200 14 V40 H0Z"/><path d="M0 36 Q55 23 110 33 T200 29 V40 H0Z"/></svg></article>
+    </section>
+
+    <form class="report-filter-bar" method="get" action="{% url 'report_list' %}" role="search">
+        <label class="report-search"><i data-lucide="search" aria-hidden="true"></i><span class="sr-only">Search by report title or location</span><input type="search" name="q" value="{{ search_query }}" placeholder="Search by title or location"></label>
+        <label><span class="sr-only">Filter by status</span><select name="status"><option value="" {% if not status_filter %}selected{% endif %}>All Statuses</option><option value="PENDING" {% if status_filter == "PENDING" %}selected{% endif %}>Pending</option><option value="IN_PROGRESS" {% if status_filter == "IN_PROGRESS" %}selected{% endif %}>In Progress</option><option value="RESOLVED" {% if status_filter == "RESOLVED" %}selected{% endif %}>Resolved</option></select></label>
+        <label><span class="sr-only">Filter by category</span><select name="category"><option value="" {% if not category_filter %}selected{% endif %}>All Categories</option>{% for value, label in category_choices %}<option value="{{ value }}" {% if category_filter == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+        <div class="report-filter-actions">
+            <button class="btn btn-secondary report-filter-submit" type="submit">Filter</button>
+            {% if has_filters %}<a class="btn btn-outline report-clear-filters" href="/reports/my-reports/"><i data-lucide="rotate-ccw" aria-hidden="true"></i>Clear Filters</a>{% endif %}
+        </div>
+    </form>
+
+    {% if reports %}
+    <section class="report-card-grid" aria-label="Your reports">
+        {% for report in reports %}
+        <article class="resident-report-card">
+            <div class="report-photo-wrap">
+                {% if report.photo %}<img class="report-photo" src="{% url 'report_photo' report.pk %}" alt="Photo for {{ report.title }}" loading="lazy">{% else %}<div class="report-photo-placeholder" aria-label="No photo attached"><i data-lucide="image"></i><span>No photo</span></div>{% endif %}
+            </div>
+            <div class="resident-report-content">
+                <div class="resident-report-topline"><span class="category-badge">{{ report.get_category_display }}</span><span class="status-badge status-{{ report.status|lower }}">{{ report.get_status_display }}</span></div>
+                <h2>{{ report.title }}</h2>
+                <p class="resident-report-description">{{ report.description|truncatechars:140 }}</p>
+                <div class="resident-report-meta"><span><i data-lucide="map-pin" aria-hidden="true"></i>{{ report.location }}</span><span><i data-lucide="calendar-days" aria-hidden="true"></i>{{ report.created_at|date:"M d, Y" }}</span></div>
+                {% if report.status == "PENDING" %}<div class="resident-report-actions"><a href="{% url 'report_update' report.pk %}"><i data-lucide="pencil" aria-hidden="true"></i>Edit</a><a class="delete-action" href="{% url 'report_delete' report.pk %}"><i data-lucide="trash-2" aria-hidden="true"></i>Delete</a></div>{% endif %}
+            </div>
+        </article>
         {% endfor %}
+    </section>
+    {% elif has_filters %}
+    <section class="report-list-empty filter-empty"><span class="empty-icon"><i data-lucide="search-x"></i></span><h2>No reports match these filters</h2><p>Try another search or clear your filters to see all submitted reports.</p><a class="btn btn-outline" href="{% url 'report_list' %}"><i data-lucide="rotate-ccw" aria-hidden="true"></i>Clear Filters</a></section>
+    {% else %}
+    <section class="report-list-empty"><span class="empty-icon"><i data-lucide="file-plus-2"></i></span><h2>Your reports will appear here</h2><p>You haven’t submitted any community reports yet. Start by sharing an issue in your neighborhood.</p><a class="btn btn-primary" href="{% url 'report_create' %}"><i data-lucide="plus" aria-hidden="true"></i>Create Report</a></section>
     {% endif %}
+</div>
+<script>
+(() => {
+    const form = document.querySelector('.report-filter-bar');
+    const search = form?.elements.namedItem('q');
+    if (!form || !search) return;
 
-    <h1>My Reports</h1>
-    <p>View and track your submitted community issues.</p>
-
-    <a href="{% url 'report_create' %}">Create Report</a>
-
-    <hr>
-
-    {% for report in reports %}
-        <h2>{{ report.title }}</h2>
-
-        <p><strong>Description:</strong> {{ report.description }}</p>
-        <p><strong>Category:</strong> {{ report.get_category_display }}</p>
-        <p><strong>Location:</strong> {{ report.location }}</p>
-
-        <p><strong>Attached Photo:</strong></p>
-
-        {% if report.photo %}
-            <img src="{% url 'report_photo' report.pk %}"
-                 alt="Report photo"
-                 style="width: 200px; border-radius: 8px;">
-        {% else %}
-            <p>No photo attached.</p>
-        {% endif %}
-
-        <p><strong>Status:</strong> {{ report.get_status_display }}</p>
-        <p><strong>Date Submitted:</strong> {{ report.created_at|date:"F d, Y - h:i A" }}</p>
-
-        {% if report.status == "PENDING" %}
-            <a href="{% url 'report_update' report.pk %}">
-                Edit Report
-            </a>
-            |
-            <a href="{% url 'report_delete' report.pk %}">
-                Delete Report
-            </a>
-        {% endif %}
-
-        <hr>
-
-    {% empty %}
-        <p>You have not submitted any reports yet.</p>
-    {% endfor %}
-
-    <a href="{% url 'resident_dashboard' %}">
-        Back to Dashboard
-    </a>
-
-</body>
-</html>
+    search.addEventListener('input', () => {
+        if (search.value === '') form.requestSubmit();
+    });
+})();
+</script>
+{% endblock %}
