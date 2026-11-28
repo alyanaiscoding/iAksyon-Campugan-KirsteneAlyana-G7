@@ -1,0 +1,39 @@
+.report-delete-body .dashboard-shell { max-width: 1600px; gap: 22px; padding: 18px 22px; }
+.report-delete-body .sidebar { width: 164px; align-items: stretch; padding: 18px 12px; border-radius: 22px; }
+.report-delete-body .sidebar-brand { margin: 0 0 26px 10px; font-size: 25px; }
+.report-delete-body .sidebar-nav { align-items: stretch; gap: 7px; }
+.report-delete-body .sidebar-link { flex-direction: row; justify-content: flex-start; gap: 11px; width: 100%; min-height: 42px; padding: 8px 11px; border-radius: 12px; }
+.report-delete-body .sidebar-link span { font-size: 12px; text-align: left; }
+.report-delete-body .sidebar-link svg { width: 18px; height: 18px; flex: 0 0 auto; }
+.report-delete-body .dashboard-main { min-width: 0; min-height: 0; }
+.report-delete-body .dashboard-content { display: flex; flex: 1 0 auto; flex-direction: column; }
+.report-delete-body .dashboard-header { margin-bottom: 14px; padding: 2px 0; }
+.report-delete-body .page-heading h1 { margin-bottom: 2px; font-size: 26px; }
+.report-delete-page { display: grid; flex: 1; place-items: center; width: 100%; padding: 10px 0 24px; }
+.report-delete-card { width: min(100%, 500px); padding: 28px 32px 30px; border: 1px solid rgba(67, 53, 89, .08); border-radius: 22px; background: var(--surface); box-shadow: var(--shadow-md, var(--shadow-sm)); text-align: center; }
+.report-delete-icon { display: grid; width: 56px; height: 56px; place-items: center; margin: 0 auto 13px; border-radius: 50%; background: #F4E3DC; color: var(--terracotta); }
+.report-delete-icon svg { width: 25px; height: 25px; stroke-width: 1.9; }
+.report-delete-card h2 { margin: 0 0 7px; color: var(--primary); font: 800 23px/1.2 var(--font-heading); letter-spacing: -.4px; }
+.report-delete-message { max-width: 380px; margin: 0 auto 19px; color: var(--text-secondary); font-size: 13px; line-height: 1.55; }
+.report-delete-summary { margin: 0 0 20px; padding: 13px 16px; border: 1px solid #EEE6DC; border-radius: 14px; background: #FBF7F1; text-align: left; }
+.report-delete-summary > div { display: grid; grid-template-columns: 94px minmax(0, 1fr); align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(213, 201, 189, .55); }
+.report-delete-summary > div:last-child { border-bottom: 0; }
+.report-delete-summary dt { color: #777078; font-size: 11px; font-weight: 600; }
+.report-delete-summary dd { overflow-wrap: anywhere; margin: 0; color: var(--text-primary); font-size: 12px; font-weight: 650; }
+.report-delete-summary .summary-title dd { color: var(--primary); font-size: 13px; }
+.report-delete-summary .summary-status dd { display: flex; }
+.report-delete-summary .status-badge { display: inline-flex; width: fit-content; padding: 3px 9px; border-radius: 99px; font-size: 10px; font-weight: 700; line-height: 1.4; }
+.report-delete-summary .status-pending { background: var(--pending-bg); color: var(--pending-text); }
+.report-delete-summary .status-in_progress { background: var(--progress-bg); color: var(--progress-text); }
+.report-delete-summary .status-resolved { background: var(--resolved-bg); color: var(--resolved-text); }
+.report-delete-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.report-delete-form { display: contents; }
+.report-delete-cancel, .report-delete-submit { display: inline-flex; align-items: center; justify-content: center; gap: 7px; width: 100%; min-height: 43px; padding: 10px 14px; border-radius: 11px; font: 700 12px/1.2 var(--font-body); text-decoration: none; transition: background .18s ease, border-color .18s ease, transform .18s ease; }
+.report-delete-cancel { border: 1px solid var(--border); background: transparent; color: var(--primary); }
+.report-delete-cancel:hover { border-color: var(--lavender); background: #F5F1F7; }
+.report-delete-submit { border: 1px solid var(--terracotta); background: var(--terracotta); color: #fffdf9; cursor: pointer; }
+.report-delete-submit:hover { border-color: #A94E3D; background: #A94E3D; }
+.report-delete-submit svg { width: 15px; height: 15px; }
+.report-delete-cancel:focus-visible, .report-delete-submit:focus-visible { outline: 3px solid rgba(117, 101, 217, .25); outline-offset: 2px; }
+@media (max-width: 760px) { .report-delete-body .dashboard-shell { gap: 12px; padding: 12px; }.report-delete-page { padding: 4px 0 16px; } }
+@media (max-width: 480px) { .report-delete-body .page-heading h1 { font-size: 22px; }.report-delete-card { padding: 23px 18px; border-radius: 18px; }.report-delete-card h2 { font-size: 21px; }.report-delete-summary { padding: 11px 12px; }.report-delete-summary > div { grid-template-columns: 76px minmax(0, 1fr); gap: 8px; }.report-delete-actions { gap: 8px; }.report-delete-cancel, .report-delete-submit { min-height: 42px; padding: 9px 8px; font-size: 11px; } }

@@ -1,31 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delete Report | iAksyon</title>
-</head>
-<body>
+{% extends "layouts/dashboard.html" %}
+{% load static %}
 
-    <h1>Delete Report</h1>
+{% block title %}iAksyon | Delete Report{% endblock %}
+{% block body_class %}dashboard-body resident-dashboard-body report-delete-body{% endblock %}
+{% block dashboard_css %}<link rel="stylesheet" href="{% static 'css/report_delete.css' %}">{% endblock %}
+{% block page_title %}My Reports{% endblock %}
+{% block page_subtitle %}Review your submitted community reports.{% endblock %}
 
-    <p>Are you sure you want to delete this report?</p>
+{% block dashboard_content %}
+<main class="report-delete-page">
+    <section class="report-delete-card" aria-labelledby="delete-heading">
+        <div class="report-delete-icon" aria-hidden="true"><i data-lucide="trash-2"></i></div>
+        <h2 id="delete-heading">Delete Report?</h2>
+        <p class="report-delete-message">Are you sure you want to delete this report? This action cannot be undone.</p>
 
-    <p><strong>Title:</strong> {{ object.title }}</p>
-    <p><strong>Category:</strong> {{ object.get_category_display }}</p>
-    <p><strong>Location:</strong> {{ object.location }}</p>
-    <p><strong>Status:</strong> {{ object.get_status_display }}</p>
+        <dl class="report-delete-summary" aria-label="Report details">
+            <div class="summary-title"><dt>Report</dt><dd>{{ object.title }}</dd></div>
+            <div><dt>Category</dt><dd>{{ object.get_category_display }}</dd></div>
+            <div><dt>Location</dt><dd>{{ object.location }}</dd></div>
+            <div class="summary-status"><dt>Status</dt><dd><span class="status-badge status-{{ object.status|lower }}">{{ object.get_status_display }}</span></dd></div>
+        </dl>
 
-    <p>This action cannot be undone.</p>
-
-    <form method="POST">
-        {% csrf_token %}
-        <button type="submit">Confirm Delete</button>
-    </form>
-
-    <br>
-
-    <a href="{% url 'report_list' %}">Cancel</a>
-
-</body>
-</html>
+        <div class="report-delete-actions">
+            <a href="{% url 'report_list' %}" class="report-delete-cancel">Cancel</a>
+            <form method="post" class="report-delete-form">
+                {% csrf_token %}
+                <button type="submit" class="report-delete-submit"><i data-lucide="trash-2" aria-hidden="true"></i>Delete Report</button>
+            </form>
+        </div>
+    </section>
+</main>
+{% endblock %}
