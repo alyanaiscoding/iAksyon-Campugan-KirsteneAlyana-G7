@@ -23,14 +23,10 @@
        --border: #E5DDD2;
    
    
-       /* Text Colors */
-   
        --text-primary: #24333D;
        --text-secondary: #59676D;
        --text-light: #FFFFFF;
    
-   
-       /* Status Colors */
    
        --pending-bg: #FBE9D1;
        --pending-text: #946022;
@@ -43,41 +39,19 @@
    
        --error-bg: #FCE2DF;
        --error-text: #A83232;
-   
-   
-       /* Typography */
-   
        --font-heading: 'Plus Jakarta Sans', sans-serif;
        --font-body: 'Inter', sans-serif;
-   
-   
-       /* Border Radius */
-   
        --radius-sm: 8px;
        --radius-md: 12px;
        --radius-lg: 18px;
        --radius-xl: 24px;
        --radius-full: 999px;
-   
-   
-       /* Shadows */
-   
        --shadow-sm: 0 2px 8px rgba(36, 51, 61, 0.05);
        --shadow-md: 0 6px 20px rgba(36, 51, 61, 0.08);
        --shadow-lg: 0 12px 32px rgba(36, 51, 61, 0.12);
-   
-   
-       /* Transitions */
-   
        --transition: 0.2s ease;
    
    }
-   
-   
-   /* =========================
-      GLOBAL RESET
-      ========================= */
-   
    * {
        box-sizing: border-box;
    }
@@ -123,12 +97,7 @@
        max-width: 100%;
        height: auto;
    }
-   
-   
-   /* =========================
-      BUTTONS
-      ========================= */
-   
+
    .btn {
        display: inline-flex;
        align-items: center;
@@ -180,11 +149,6 @@
        opacity: 0.5;
        cursor: not-allowed;
    }
-   
-   
-   /* =========================
-      CARDS
-      ========================= */
    
    .ui-card {
        background: var(--surface);
@@ -279,4 +243,104 @@
            animation: none !important;
        }
    }
-   
+
+
+/* =========================
+   BASE LAYOUT
+   ========================= */
+
+.base-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 20px 5%;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+}
+
+.brand {
+    font-family: var(--font-heading);
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    color: var(--primary);
+}
+
+.brand span {
+    color: var(--terracotta);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.base-content {
+    width: 100%;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 32px;
+}
+
+
+/* =========================
+   DJANGO FEEDBACK MESSAGES
+   ========================= */
+
+.messages {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.alert {
+    padding: 14px 18px;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    background: var(--progress-bg);
+    color: var(--progress-text);
+}
+
+.alert-success {
+    background: var(--resolved-bg);
+    color: var(--resolved-text);
+}
+
+.alert-error {
+    background: var(--error-bg);
+    color: var(--error-text);
+}
+
+.alert-warning {
+    background: var(--pending-bg);
+    color: var(--pending-text);
+}
+
+.alert-info {
+    background: var(--progress-bg);
+    color: var(--progress-text);
+}
+
+
+/* =========================
+   BASE RESPONSIVENESS
+   ========================= */
+
+@media (max-width: 768px) {
+    .base-nav {
+        padding: 16px 20px;
+    }
+
+    .base-content {
+        padding: 20px;
+    }
+
+    .nav-actions {
+        gap: 10px;
+    }
+}

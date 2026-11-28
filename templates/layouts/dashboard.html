@@ -1,0 +1,205 @@
+
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
+{% block dashboard_css %}{% endblock %}
+{% endblock %}
+
+{% block body_class %}dashboard-body{% endblock %}
+
+{% block layout %}
+
+<div class="dashboard-shell">
+
+    <!-- Floating Sidebar -->
+    <aside class="sidebar">
+
+        <a href="{% url 'dashboard' %}" class="sidebar-brand">
+            iA<span>.</span>
+        </a>
+
+        <nav class="sidebar-nav" aria-label="Dashboard navigation">
+
+            {% if user.role == "RESIDENT" %}
+
+                <a href="{% url 'resident_dashboard' %}"
+                   class="sidebar-link {% if request.resolver_match.url_name == 'resident_dashboard' %}active{% endif %}"
+                   title="Dashboard"
+                   aria-label="Dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="{% url 'report_create' %}"
+                   class="sidebar-link {% if request.resolver_match.url_name == 'report_create' %}active{% endif %}"
+                   title="Create Report"
+                   aria-label="Create Report">
+                    <i data-lucide="file-plus"></i>
+                    <span>Create Report</span>
+                </a>
+
+                <a href="{% url 'report_list' %}"
+                   class="sidebar-link {% if request.resolver_match.url_name == 'report_list' or request.resolver_match.url_name == 'report_update' or request.resolver_match.url_name == 'report_delete' %}active{% endif %}"
+                   title="My Reports"
+                   aria-label="My Reports">
+                    <i data-lucide="clipboard-list"></i>
+                    <span>My Reports</span>
+                </a>
+
+                <a href="{% url 'profile' %}"
+                   class="sidebar-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}"
+                   title="My Profile"
+                   aria-label="My Profile">
+                    <i data-lucide="user-round"></i>
+                    <span>My Profile</span>
+                </a>
+
+            {% elif user.role == "ADMIN" %}
+
+                <a href="{% url 'admin_panel' %}"
+                   class="sidebar-link {% if request.resolver_match.url_name == 'admin_panel' %}active{% endif %}"
+                   title="Dashboard"
+                   aria-label="Dashboard">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="{% url 'admin_report_list' %}"
+                   class="sidebar-link {% if request.resolver_match.url_name == 'admin_report_list' or request.resolver_match.url_name == 'admin_report_update' %}active{% endif %}"
+                   title="Manage Reports"
+                   aria-label="Manage Reports">
+                    <i data-lucide="clipboard-list"></i>
+                    <span>Manage Reports</span>
+                </a>
+
+                <a href="{% url 'analytics_dashboard' %}"
+                   class="sidebar-link {% if request.resolver_match.url_name == 'analytics_dashboard' %}active{% endif %}"
+                   title="Analytics"
+                   aria-label="Analytics">
+                    <i data-lucide="chart-no-axes-combined"></i>
+                    <span>Analytics</span>
+                </a>
+
+            {% endif %}
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+
+                <button type="submit"
+                        class="sidebar-link logout-button"
+                        title="Log out"
+                        aria-label="Log out">
+                    <i data-lucide="log-out"></i>
+                    <span>Log out</span>
+                </button>
+
+            </form>
+
+        </div>
+
+    </aside>
+
+
+    <!-- Main Dashboard -->
+    <div class="dashboard-main">
+
+        <!-- Header -->
+        <header class="dashboard-header">
+
+            <div class="page-heading">
+
+                <h1>
+                    {% block page_title %}Overview{% endblock %}
+                </h1>
+
+                <p>
+                    {% block page_subtitle %}
+                    Your community at a glance.
+                    {% endblock %}
+                </p>
+
+            </div>
+
+            <div class="header-user">
+
+                <div class="user-avatar">
+                    {{ user.first_name|default:user.username|slice:":1"|upper }}
+                </div>
+
+                <div class="user-details">
+                    <strong>
+                    {{ user.first_name|default:user.username|truncatewords:1 }}
+                    </strong>
+
+                    <span>{{ user.get_role_display }}</span>
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- Feedback Messages -->
+        {% if messages %}
+
+            <div class="messages" aria-live="polite">
+
+                {% for message in messages %}
+
+                    <div class="alert alert-{{ message.tags }}"
+                         role="status">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% endif %}
+
+
+        <!-- Individual Page Content -->
+        <main class="dashboard-content">
+
+            {% block dashboard_content %}
+            {% endblock %}
+
+        </main>
+
+
+        <!-- Footer -->
+        <footer class="dashboard-footer">
+
+            <span>iAksyon &copy; {% now "Y" %}</span>
+
+            <span>Small actions. Lasting change.</span>
+
+        </footer>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+
+<script>
+    if (window.lucide) {
+        lucide.createIcons();
+    }
+</script>
+
+{% block dashboard_js %}{% endblock %}
+
+{% endblock %}

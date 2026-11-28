@@ -1,27 +1,73 @@
+
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
- 
 <head>
-    <title>CampusConnect</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}iAksyon{% endblock %}</title>
+
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+
+    {% block extra_css %}{% endblock %}
 </head>
- 
-<body>
-    <nav>
-        {% if user.is_authenticated %}
-         Hi, {{ user.username }}!
-         <form method="post" action="{% url 'logout' %}">
-            {% csrf_token %}
-            <button type="submit">Log out</button>
-         </form>
-        {% else %}
-         <a href="{% url 'login' %}">Log in</a>
-         <a href="{% url 'signup' %}">Sign Up</a>
-        {% endif %}
-    </nav>
- 
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
+
+<body class="{% block body_class %}{% endblock %}">
+
+    {% block layout %}
+
+        <nav class="base-nav">
+            <a href="{% url 'dashboard' %}" class="brand">
+                iAksyon<span>.</span>
+            </a>
+
+            <div class="nav-actions">
+                {% if user.is_authenticated %}
+
+                    <span>Hi, {{ user.username }}!</span>
+
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline">
+                            Log out
+                        </button>
+                    </form>
+
+                {% else %}
+
+                    <a href="{% url 'login' %}" class="btn btn-outline">
+                        Log in
+                    </a>
+
+                    <a href="{% url 'signup' %}" class="btn btn-primary">
+                        Sign Up
+                    </a>
+
+                {% endif %}
+            </div>
+        </nav>
+
+        <main class="base-content">
+
+            {% if messages %}
+                <div class="messages" aria-live="polite">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}" role="status">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% block content %}{% endblock %}
+
+        </main>
+
+    {% endblock %}
+
+    {% block extra_js %}{% endblock %}
+
 </body>
 </html>

@@ -1,41 +1,350 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>iAksyon | Resident Dashboard</title>
-</head>
-<body>
-    {% if messages %}
-    {% for message in messages %}
-        <p role="status" style="color: green;">
-            {{ message }}
+
+{% extends "layouts/dashboard.html" %}
+{% load static %}
+
+{% block title %}iAksyon | Resident Dashboard{% endblock %}
+
+{% block body_class %}dashboard-body resident-dashboard-body{% endblock %}
+
+{% block dashboard_css %}
+<link rel="stylesheet" href="{% static 'css/resident_dashboard.css' %}">
+{% endblock %}
+
+{% block page_title %}Overview{% endblock %}
+
+{% block page_subtitle %}
+Your community at a glance.
+{% endblock %}
+
+{% block dashboard_content %}
+
+<!-- Welcome Banner -->
+<section class="welcome-banner">
+
+    <div class="welcome-content">
+
+        <span class="welcome-label">
+            YOUR COMMUNITY, YOUR VOICE
+        </span>
+
+        <h2>
+            Hello, {{ user.first_name|default:user.username|truncatewords:1 }}!
+        </h2>
+
+        <p>
+            A better community begins with you.
         </p>
-    {% endfor %}
-    {% endif %}
 
-    <h1>iAksyon</h1>
-    <h2>Resident Dashboard</h2>
+        <a href="{% url 'report_create' %}"
+           class="btn btn-primary">
+            <i data-lucide="plus"></i>
+            Submit a Report
+        </a>
 
-    <h3>Welcome, {{ user.first_name }}!</h3>
+    </div>
 
-    <p>Username: {{ user.username }}</p>
-    <p>Role: {{ user.get_role_display }}</p>
+    <div class="welcome-art" aria-hidden="true">
 
-    <hr>
+        <svg viewBox="0 0 760 280" preserveAspectRatio="none"
+             xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="sunset-sky" x1="0" y1="0" x2="1" y2="1">
+                    <stop stop-color="#F8F2E9" stop-opacity="0"/>
+                    <stop offset=".48" stop-color="#F4C38B" stop-opacity=".18"/>
+                    <stop offset="1" stop-color="#EBA58F" stop-opacity=".34"/>
+                </linearGradient>
+                <linearGradient id="path-light" x1=".2" y1="0" x2=".8" y2="1">
+                    <stop stop-color="#F8F2E9" stop-opacity=".96"/>
+                    <stop offset="1" stop-color="#F4C38B" stop-opacity=".72"/>
+                </linearGradient>
+                <filter id="paper-shadow" x="-20%" y="-20%" width="140%" height="150%">
+                    <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur"/>
+                    <feOffset dy="3" result="offset"/>
+                    <feComponentTransfer><feFuncA type="linear" slope=".13"/></feComponentTransfer>
+                    <feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+            </defs>
+            <path fill="url(#sunset-sky)" d="M0 0h760v280H0z"/>
+            <circle cx="572" cy="91" r="49" fill="#F4C38B" opacity=".22"/>
+            <circle cx="572" cy="91" r="37" fill="#F4C38B" opacity=".92"/>
+            <g fill="none" stroke="#F8F2E9" stroke-width="3" stroke-linecap="round" opacity=".78">
+                <path d="M428 67q9-9 18 0 9-10 19 0h10"/><path d="M652 48q8-8 16 0 9-9 17 0h9"/>
+                <path d="M493 48q5-5 10 0 5-5 10 0h7" opacity=".55"/>
+            </g>
+            <path d="M236 178c39-30 63-70 105-83 37-11 63 5 91-7 28-12 39-35 73-33 38 2 54 33 85 34 38 2 64-26 105-18 27 5 42 22 65 30v137H236Z" fill="#C6BEDD" opacity=".86"/>
+            <path d="M174 196c50-32 87-55 132-47 40 7 60 26 98 17 42-10 60-38 100-37 36 1 58 27 94 25 45-2 65-31 107-28 25 2 39 12 55 18v113H174Z" fill="#D9D1E6"/>
+            <path d="M122 220c40-36 88-53 132-46 40 7 57 28 97 24 47-4 70-36 113-32 42 4 61 34 102 31 41-3 57-29 100-27 36 2 65 21 94 17v93H122Z" fill="#A6BEB1" filter="url(#paper-shadow)"/>
+            <path d="M82 244c44-30 79-45 122-40 49 6 67 32 114 31 49-1 74-31 119-26 45 5 65 34 108 30 47-4 67-31 115-25 39 5 63 27 100 21v75H82Z" fill="#849F91" filter="url(#paper-shadow)"/>
+            <!-- distant native trees -->
+            <g fill="#718F80" opacity=".9">
+                <path d="M191 201c-17-8-19-23-8-32-2-13 11-22 23-15 13-4 22 8 17 20 10 13 1 27-13 28v22h-13v-23Z"/>
+                <path d="M682 192c-15-7-17-20-7-29-2-11 10-19 20-13 12-4 19 7 15 17 9 11 1 23-12 24v23h-12v-22Z"/>
+            </g>
+            <!-- homes tucked into the hillside -->
+            <g filter="url(#paper-shadow)">
+                <g transform="translate(390 174)">
+                    <path d="M0 23 37-5l39 28v47H0Z" fill="#F8F2E9"/><path d="M-7 25 36-13l47 38-8 8L36-1 1 33Z" fill="#B9634E"/><path d="M12 29h13v14H12zm39 0h13v14H51z" fill="#D5A878"/><path d="M31 45h14v25H31Z" fill="#194B59"/><path d="M32 14h8v9h-8z" fill="#F4C38B"/>
+                    <path d="M-1 68h80" stroke="#F8F2E9" stroke-opacity=".7" stroke-width="2"/>
+                </g>
+                <g transform="translate(505 190) scale(.79)">
+                    <path d="M0 23 37-5l39 28v47H0Z" fill="#FFF9F1"/><path d="M-7 25 36-13l47 38-8 8L36-1 1 33Z" fill="#C6BEDD"/><path d="M12 29h13v14H12zm39 0h13v14H51z" fill="#D5A878"/><path d="M31 45h14v25H31Z" fill="#194B59"/>
+                </g>
+                <g transform="translate(621 169) scale(.94)">
+                    <path d="M0 23 37-5l39 28v47H0Z" fill="#F8F2E9"/><path d="M-7 25 36-13l47 38-8 8L36-1 1 33Z" fill="#B9634E"/><path d="M12 29h13v14H12zm39 0h13v14H51z" fill="#D5A878"/><path d="M31 45h14v25H31Z" fill="#194B59"/>
+                </g>
+            </g>
+            <!-- curved neighborhood lane -->
+            <path d="M760 280H418c26-22 57-34 76-54 17-19 13-35-7-47 45 2 78 24 74 51-3 20-24 35-45 50h244Z" fill="url(#path-light)" opacity=".8"/>
+            <path d="M760 280H495c21-18 41-31 52-45 12-15 8-28-8-39 33 6 53 23 47 42-5 16-24 29-39 42h213Z" fill="#EBA58F" opacity=".28"/>
+            <!-- street lamps -->
+            <g fill="none" stroke="#194B59" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M371 250v-59q0-8 8-8h10"/><path d="M701 222v-59q0-8 8-8h10"/>
+            </g>
+            <g fill="#F4C38B"><path d="M378 177h13v7h-13z"/><path d="M708 147h13v7h-13z"/></g>
+            <g fill="#718F80">
+                <path d="M351 248c-15-7-17-20-7-29-2-11 10-19 20-13 12-4 19 7 15 17 9 11 1 23-12 24v26h-12v-25Z"/>
+                <path d="M735 225c-15-7-17-20-7-29-2-11 10-19 20-13 12-4 19 7 15 17 9 11 1 23-12 24v26h-12v-25Z"/>
+            </g>
+            <path d="M0 270c102-17 173 5 260 5 91 0 131-19 205-14 84 5 141 24 295 5v14H0Z" fill="#194B59" opacity=".9"/>
+        </svg>
 
-    <h3>Resident Services</h3>
+    </div>
 
-    <a href="{% url 'report_create' %}">Create Report</a>
-    <a href="{% url 'report_list' %}">View My Reports</a>
-    <a href="{% url 'report_list' %}">Check Report Status</a>
-    <a href="{% url 'profile' %}">My Profile</a>
+</section>
 
-    <hr>
 
-    <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button type="submit">Log out</button>
-    </form>
+<!-- Report Summary -->
+<section class="report-summary">
 
-</body>
-</html>
+    <div class="section-heading">
+        <h2>Your Report Summary</h2>
+        <p>Keep track of your community reports.</p>
+    </div>
+
+    <div class="summary-grid">
+
+        <article class="summary-card total-card">
+
+            <div class="summary-icon">
+                <i data-lucide="clipboard-list"></i>
+            </div>
+
+            <p>Total Reports</p>
+            <h3>{{ total_reports }}</h3>
+
+            <svg class="card-wave"
+                 viewBox="0 0 200 40"
+                 preserveAspectRatio="none"
+                 aria-hidden="true">
+                <path class="wave-back" d="M0 29 Q48 8 98 22 T200 14 V40 H0Z"/>
+                <path class="wave-mid" d="M0 33 Q48 14 100 28 T200 21 V40 H0Z"/>
+                <path class="wave-front" d="M0 36 Q55 23 110 33 T200 29 V40 H0Z"/>
+            </svg>
+
+        </article>
+
+
+        <article class="summary-card pending-card">
+
+            <div class="summary-icon">
+                <i data-lucide="clock"></i>
+            </div>
+
+            <p>Pending</p>
+            <h3>{{ pending_reports }}</h3>
+
+            <svg class="card-wave"
+                 viewBox="0 0 200 40"
+                 preserveAspectRatio="none"
+                 aria-hidden="true">
+                <path class="wave-back" d="M0 29 Q48 8 98 22 T200 14 V40 H0Z"/>
+                <path class="wave-mid" d="M0 33 Q48 14 100 28 T200 21 V40 H0Z"/>
+                <path class="wave-front" d="M0 36 Q55 23 110 33 T200 29 V40 H0Z"/>
+            </svg>
+
+        </article>
+
+
+        <article class="summary-card progress-card">
+
+            <div class="summary-icon">
+                <i data-lucide="loader"></i>
+            </div>
+
+            <p>In Progress</p>
+            <h3>{{ in_progress_reports }}</h3>
+
+            <svg class="card-wave"
+                 viewBox="0 0 200 40"
+                 preserveAspectRatio="none"
+                 aria-hidden="true">
+                <path class="wave-back" d="M0 29 Q48 8 98 22 T200 14 V40 H0Z"/>
+                <path class="wave-mid" d="M0 33 Q48 14 100 28 T200 21 V40 H0Z"/>
+                <path class="wave-front" d="M0 36 Q55 23 110 33 T200 29 V40 H0Z"/>
+            </svg>
+
+        </article>
+
+
+        <article class="summary-card resolved-card">
+
+            <div class="summary-icon">
+                <i data-lucide="circle-check"></i>
+            </div>
+
+            <p>Resolved</p>
+            <h3>{{ resolved_reports }}</h3>
+
+            <svg class="card-wave"
+                 viewBox="0 0 200 40"
+                 preserveAspectRatio="none"
+                 aria-hidden="true">
+                <path class="wave-back" d="M0 29 Q48 8 98 22 T200 14 V40 H0Z"/>
+                <path class="wave-mid" d="M0 33 Q48 14 100 28 T200 21 V40 H0Z"/>
+                <path class="wave-front" d="M0 36 Q55 23 110 33 T200 29 V40 H0Z"/>
+            </svg>
+
+        </article>
+
+    </div>
+
+</section>
+
+
+<!-- Recent Reports and Progress -->
+<div class="dashboard-bottom-grid">
+
+    <section class="ui-card recent-reports">
+
+        <div class="card-heading">
+
+            <div>
+                <h2>Recent Reports</h2>
+                <p>Your latest submitted concerns.</p>
+            </div>
+
+            <a href="{% url 'report_list' %}"
+               class="view-all">
+                View all
+                <i data-lucide="arrow-right"></i>
+            </a>
+
+        </div>
+
+        {% for report in recent_reports %}
+
+            <div class="recent-report-item">
+
+                <div class="report-icon">
+                    <i data-lucide="file-text"></i>
+                </div>
+
+                <div class="report-info">
+
+                    <h3>{{ report.title }}</h3>
+
+                    <p>
+                        {{ report.get_category_display }}
+                        &middot;
+                        {{ report.created_at|date:"M d, Y" }}
+                    </p>
+
+                </div>
+
+                {% if report.status == "PENDING" %}
+
+                    <span class="status-badge status-pending">
+                        Pending
+                    </span>
+
+                {% elif report.status == "IN_PROGRESS" %}
+
+                    <span class="status-badge status-in-progress">
+                        In Progress
+                    </span>
+
+                {% elif report.status == "RESOLVED" %}
+
+                    <span class="status-badge status-resolved">
+                        Resolved
+                    </span>
+
+                {% endif %}
+
+            </div>
+
+        {% empty %}
+
+            <div class="empty-reports">
+
+                <i data-lucide="clipboard-list"></i>
+
+                <h3>No reports yet</h3>
+
+                <p>
+                    Start making a difference by submitting
+                    your first community report.
+                </p>
+
+                <a href="{% url 'report_create' %}"
+                   class="btn btn-outline">
+                    Create a Report
+                </a>
+
+            </div>
+
+        {% endfor %}
+
+    </section>
+
+
+    <!-- Resolution Progress -->
+    <section class="ui-card report-progress">
+
+        <div class="card-heading">
+            <div>
+                <h2>Report Progress</h2>
+                <p>Your report resolution rate.</p>
+            </div>
+        </div>
+
+        <div class="progress-ring"
+             style="--rate: {{ resolution_rate }}%;">
+
+            <div class="progress-ring-inner">
+
+                <strong>{{ resolution_rate }}%</strong>
+                <span>Resolved</span>
+
+            </div>
+
+        </div>
+
+        <div class="progress-legend">
+
+            <div class="legend-item">
+                <span class="legend-dot resolved-dot"></span>
+                <span>Resolved</span>
+                <strong>{{ resolved_reports }}</strong>
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-dot progress-dot"></span>
+                <span>In Progress</span>
+                <strong>{{ in_progress_reports }}</strong>
+            </div>
+
+            <div class="legend-item">
+                <span class="legend-dot pending-dot"></span>
+                <span>Pending</span>
+                <strong>{{ pending_reports }}</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+{% endblock %}
