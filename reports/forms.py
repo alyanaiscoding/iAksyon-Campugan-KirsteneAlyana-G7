@@ -12,6 +12,7 @@ class ReportForm(forms.ModelForm):
             "description",
             "category",
             "location",
+            "photo",
         ]
 
         widgets = {
@@ -26,6 +27,17 @@ class ReportForm(forms.ModelForm):
                 "placeholder": "Enter the location of the issue"
             }),
         }
+
+def clean_photo(self):
+    photo = self.cleaned_data.get("photo")
+
+    if photo:
+        if photo.size > 5 * 1024 * 1024:
+            raise forms.ValidationError(
+                "Photo size must not exceed 5 MB."
+            )
+
+    return photo
 
 class ReportStatusForm(forms.ModelForm):
     class Meta:
