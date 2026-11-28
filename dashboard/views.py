@@ -21,6 +21,36 @@ class AdminPanelView(
     def test_func(self):
         return self.request.user.role == CustomUser.Role.ADMIN
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        reports = Report.objects.all()
+        statistics = reports.aggregate(
+            total_reports=Count("id"),
+            pending_reports=Count(
+                "id", filter=Q(status=Report.Status.PENDING)
+            ),
+            in_progress_reports=Count(
+                "id", filter=Q(status=Report.Status.IN_PROGRESS)
+            ),
+            resolved_reports=Count(
+                "id", filter=Q(status=Report.Status.RESOLVED)
+            ),
+        )
+        context.update(statistics)
+        context["recent_reports"] = reports.select_related("resident").order_by(
+            "-created_at"
+        )[:5]
+        total = statistics["total_reports"]
+        resolved = statistics["resolved_reports"]
+        context["resolution_rate"] = round(resolved * 100 / total) if total else 0
+        context["summary_cards"] = [
+            {"label": "Total Reports", "count": total, "class": "total-card", "icon": "clipboard-list"},
+            {"label": "Pending", "count": statistics["pending_reports"], "class": "pending-card", "icon": "clock"},
+            {"label": "In Progress", "count": statistics["in_progress_reports"], "class": "progress-card", "icon": "loader"},
+            {"label": "Resolved", "count": resolved, "class": "resolved-card", "icon": "circle-check"},
+        ]
+        return context
+
 
 class ResidentDashboardView(
     LoginRequiredMixin,
