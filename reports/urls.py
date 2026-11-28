@@ -8,6 +8,8 @@ from .views import (
     AdminReportListView,
     AdminReportUpdateView
 )
+from .views import AnalyticsDashboardView
+
 
 urlpatterns = [
     path(
@@ -41,4 +43,9 @@ urlpatterns = [
         name="admin_report_update"
     ),
     path("<int:pk>/photo/", report_photo, name="report_photo"),
+    path(
+    "analytics/",
+    AnalyticsDashboardView.as_view(),
+    name="analytics_dashboard"
+),
 ]

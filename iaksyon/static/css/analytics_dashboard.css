@@ -1,0 +1,205 @@
+
+/* General Layout */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8fafc;
+    color: #1f2937;
+    margin: 0;
+    padding: 32px;
+}
+
+/* Dashboard Header */
+
+header {
+    margin-bottom: 24px;
+}
+
+header h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+header p {
+    color: #64748b;
+    margin-bottom: 16px;
+}
+
+header a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+header a:hover {
+    text-decoration: underline;
+}
+
+/* Summary Cards */
+
+.summary-cards {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 16px;
+    margin: 24px 0;
+}
+
+.card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.card h3 {
+    font-size: 14px;
+    font-weight: 500;
+    color: #64748b;
+    margin: 0;
+}
+
+.card h2 {
+    font-size: 32px;
+    margin: 10px 0 0;
+    overflow-wrap: anywhere;
+}
+
+/* Status Colors */
+
+.pending {
+    color: #d97706;
+}
+
+.in-progress {
+    color: #2563eb;
+}
+
+.resolved {
+    color: #16a34a;
+}
+
+/* Charts Grid */
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+/* Chart Cards */
+
+.chart-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    min-width: 0;
+}
+
+.chart-card h2 {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 8px;
+}
+
+.chart-card p {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 24px;
+}
+
+/* Doughnut Chart */
+
+.chart-container {
+    position: relative;
+    height: 320px;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+/* Bar and Line Charts */
+
+.bar-chart-container {
+    position: relative;
+    width: 100%;
+    height: 320px;
+}
+
+/* Empty State */
+
+.empty-state {
+    background-color: #ffffff;
+    border: 1px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 48px 24px;
+    text-align: center;
+}
+
+.empty-state h2 {
+    font-size: 20px;
+}
+
+.empty-state p {
+    color: #64748b;
+}
+
+/* Tablet Layout */
+
+@media (max-width: 1000px) {
+    .summary-cards {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Mobile Layout */
+
+@media (max-width: 600px) {
+    body {
+        padding: 16px;
+    }
+
+    header h1 {
+        font-size: 24px;
+    }
+
+    .summary-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .card {
+        padding: 16px;
+    }
+
+    .card h2 {
+        font-size: 26px;
+    }
+
+    .card:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .chart-card {
+        padding: 16px;
+    }
+
+    .charts-grid {
+        gap: 16px;
+    }
+
+    .chart-container {
+        height: 260px;
+    }
+
+    .bar-chart-container {
+        height: 300px;
+    }
+}
