@@ -1,0 +1,70 @@
+/* Edit Report photo attachment only. */
+.report-edit-photo,
+.report-edit-photo * {
+    min-width: 0;
+}
+
+.report-edit-photo .photo-label-row,
+.report-edit-photo .photo-dropzone,
+.report-edit-photo .saved-photo {
+    width: 100%;
+    max-width: 100%;
+}
+
+.report-edit-photo .saved-photo {
+    min-height: 90px;
+    margin: 0 0 8px;
+    padding: 8px;
+    gap: 12px;
+}
+
+.report-edit-photo .saved-photo > img {
+    width: 72px;
+    height: 72px;
+}
+
+.report-edit-photo .saved-photo-details {
+    align-items: flex-start;
+    gap: 2px;
+    overflow-wrap: anywhere;
+}
+
+.report-edit-photo .remove-photo-option {
+    display: inline-flex !important;
+    flex-direction: row;
+    align-items: center;
+    gap: 7px !important;
+    margin: 2px 0 0 !important;
+    white-space: nowrap;
+}
+
+.report-edit-photo .remove-photo-option input[type="checkbox"] {
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 15px;
+    min-height: 15px;
+    height: 15px;
+    margin: 0;
+    padding: 0;
+    accent-color: var(--action);
+}
+
+.report-edit-photo .photo-dropzone {
+    flex-wrap: nowrap;
+    gap: 12px !important;
+    min-height: 64px;
+    padding: 8px 12px;
+}
+
+.report-edit-photo .upload-copy { flex: 1 1 auto; }
+.report-edit-photo .upload-browse { flex: 0 0 auto; white-space: nowrap; }
+.report-edit-photo .photo-preview { flex: 0 1 170px; }
+
+@media (max-width: 420px) {
+    .report-edit-photo .photo-dropzone { flex-wrap: nowrap; }
+    .report-edit-photo .upload-browse { display: inline-block; }
+    .report-edit-photo .upload-copy strong { font-size: 12px; }
+    .report-edit-photo .photo-preview { flex-basis: 72px; }
+    .report-edit-photo .photo-label-row { align-items: flex-start; }
+    .report-edit-photo .photo-label-row label { flex-wrap: wrap; }
+}

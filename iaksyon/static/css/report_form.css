@@ -114,6 +114,13 @@
 .photo-preview[hidden] { display: none; }
 .photo-preview img { width: 42px; height: 42px; flex: 0 0 auto; object-fit: cover; border-radius: 9px; }
 .photo-filename { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.saved-photo { display: flex; align-items: center; gap: 12px; margin-bottom: 9px; padding: 9px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); }
+.saved-photo > img { width: 64px; height: 64px; flex: 0 0 auto; border-radius: 9px; object-fit: cover; }
+.saved-photo-details { display: flex; flex-direction: column; gap: 3px; color: var(--text-secondary); font-size: 11px; }
+.saved-photo-details strong { color: var(--text-primary); font-size: 12px; }
+.remove-photo-option { display: inline-flex !important; align-items: center; gap: 6px !important; margin: 4px 0 0 !important; font-size: 11px !important; font-weight: 600 !important; cursor: pointer; }
+.remove-photo-option input { accent-color: var(--action); }
+.replacement-label { margin: 0 0 6px; color: var(--text-secondary); font-size: 11px; }
 .report-form-actions { display: flex; align-items: center; justify-content: flex-end; gap: 11px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
 .report-form-actions .btn { min-height: 42px; padding: 9px 17px; }
 .report-form-actions svg { width: 17px; height: 17px; }
