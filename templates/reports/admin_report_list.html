@@ -1,63 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Reports | iAksyon</title>
-</head>
-<body>
-    {% if messages %}
-    {% for message in messages %}
-        <p role="status" style="color: green;">
-            {{ message }}
-        </p>
-    {% endfor %}
-    {% endif %}
+{% extends "layouts/dashboard.html" %}
+{% load static %}
 
-    <h1>Manage Reports</h1>
-    <p>View community issues submitted by residents.</p>
-    <p>Total Reports: {{ reports|length }}</p>
-    <table border="1" cellpadding="10">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Resident</th>
-                <th>Category</th>
-                <th>Location</th>
-                <th>Status</th>
-                <th>Date Submitted</th>
-            </tr>
-        </thead>
+{% block title %}iAksyon | Manage Reports{% endblock %}
+{% block body_class %}dashboard-body admin-dashboard-body admin-report-list-body{% endblock %}
+{% block dashboard_css %}<link rel="stylesheet" href="{% static 'css/admin_report_list.css' %}">{% endblock %}
+{% block page_title %}Manage Reports{% endblock %}
+{% block page_subtitle %}Review, monitor, and manage community concerns.{% endblock %}
 
-        <tbody>
-            {% for report in reports %}
-                <tr>
-                    <td>
-                        <a href="{% url 'admin_report_update' report.pk %}">
-                            {{ report.title }}
-                        </a>
-                    </td>
-                    <td>{{ report.resident.username }}</td>
-                    <td>{{ report.get_category_display }}</td>
-                    <td>{{ report.location }}</td>
-                    <td>{{ report.get_status_display }}</td>
-                    <td>{{ report.created_at|date:"M d, Y" }}</td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="6">
-                        No reports submitted yet.
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+{% block dashboard_content %}
+<main class="admin-report-page">
+    <section class="admin-report-summary" aria-label="Community report summary">
+        <article class="report-summary-card summary-total"><span class="summary-icon"><i data-lucide="clipboard-list"></i></span><p>Total Reports</p><strong>{{ total_reports }}</strong><svg class="card-wave" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path class="wave-back" d="M0 29 Q48 8 98 22 T200 14 V40 H0Z"/><path class="wave-mid" d="M0 33 Q48 14 100 28 T200 21 V40 H0Z"/><path class="wave-front" d="M0 36 Q55 23 110 33 T200 29 V40 H0Z"/></svg></article>
+        <article class="report-summary-card summary-pending"><span class="summary-icon"><i data-lucide="clock-3"></i></span><p>Pending</p><strong>{{ pending_reports }}</strong><svg class="card-wave" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path class="wave-back" d="M0 29 Q48 8 98 22 T200 14 V40 H0Z"/><path class="wave-mid" d="M0 33 Q48 14 100 28 T200 21 V40 H0Z"/><path class="wave-front" d="M0 36 Q55 23 110 33 T200 29 V40 H0Z"/></svg></article>
+        <article class="report-summary-card summary-progress"><span class="summary-icon"><i data-lucide="loader-circle"></i></span><p>In Progress</p><strong>{{ in_progress_reports }}</strong><svg class="card-wave" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path class="wave-back" d="M0 29 Q48 8 98 22 T200 14 V40 H0Z"/><path class="wave-mid" d="M0 33 Q48 14 100 28 T200 21 V40 H0Z"/><path class="wave-front" d="M0 36 Q55 23 110 33 T200 29 V40 H0Z"/></svg></article>
+        <article class="report-summary-card summary-resolved"><span class="summary-icon"><i data-lucide="circle-check"></i></span><p>Resolved</p><strong>{{ resolved_reports }}</strong><svg class="card-wave" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path class="wave-back" d="M0 29 Q48 8 98 22 T200 14 V40 H0Z"/><path class="wave-mid" d="M0 33 Q48 14 100 28 T200 21 V40 H0Z"/><path class="wave-front" d="M0 36 Q55 23 110 33 T200 29 V40 H0Z"/></svg></article>
+    </section>
 
-    <br>
+    <form class="admin-report-filters" method="get" action="{% url 'admin_report_list' %}" role="search">
+        <label class="report-search"><i data-lucide="search" aria-hidden="true"></i><span class="sr-only">Search reports</span><input type="search" name="q" value="{{ search_query }}" placeholder="Search title, location, resident, or username"></label>
+        <label><span class="sr-only">Filter by status</span><select name="status"><option value="" {% if not status_filter %}selected{% endif %}>All Statuses</option>{% for value, label in status_choices %}<option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+        <label><span class="sr-only">Filter by category</span><select name="category"><option value="" {% if not category_filter %}selected{% endif %}>All Categories</option>{% for value, label in category_choices %}<option value="{{ value }}" {% if category_filter == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+        <div class="filter-actions"><button class="btn btn-secondary" type="submit">Filter</button>{% if has_filters %}<a class="clear-filters" href="{% url 'admin_report_list' %}">Clear Filters</a>{% endif %}</div>
+    </form>
 
-    <a href="{% url 'admin_panel' %}">
-        Back to Dashboard
-    </a>
-
-</body>
-</html>
+    <section class="admin-report-table-card" aria-label="Community reports">
+        {% if reports %}
+        <div class="table-scroll"><table class="admin-report-table">
+            <thead><tr><th scope="col">Report Title</th><th scope="col">Resident</th><th scope="col">Category</th><th scope="col">Location</th><th scope="col">Date Submitted</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead>
+            <tbody>{% for report in reports %}
+            <tr><td class="report-title-cell">{{ report.title }}</td><td>{{ report.resident.get_full_name|default:report.resident.username }}</td><td>{{ report.get_category_display }}</td><td>{{ report.location }}</td><td>{{ report.created_at|date:"M d, Y" }}</td><td><span class="status-pill status-{{ report.status|lower }}">{{ report.get_status_display }}</span></td><td><a class="view-details" href="{% url 'admin_report_update' report.pk %}"><i data-lucide="eye" aria-hidden="true"></i>View Details</a></td></tr>
+            {% endfor %}</tbody>
+        </table></div>
+        {% elif has_filters %}
+        <div class="admin-report-empty"><span><i data-lucide="search-x"></i></span><h2>No matching reports</h2><p>Try changing your search or filters to find community reports.</p><a class="clear-filters" href="{% url 'admin_report_list' %}">Clear Filters</a></div>
+        {% else %}
+        <div class="admin-report-empty"><span><i data-lucide="clipboard-list"></i></span><h2>No reports yet</h2><p>Community reports will appear here when residents submit a concern.</p></div>
+        {% endif %}
+    </section>
+</main>
+<script>
+(() => {
+    const form = document.querySelector('.admin-report-filters');
+    const search = form?.elements.namedItem('q');
+    if (!form || !search) return;
+    search.addEventListener('input', () => {
+        if (search.value === '') form.requestSubmit();
+    });
+})();
+</script>
+{% endblock %}

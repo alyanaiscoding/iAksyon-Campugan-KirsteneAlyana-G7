@@ -16,8 +16,8 @@ from django.views.generic import (
 )
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404
-from django.db.models import Count, Q
-from django.db.models.functions import TruncMonth
+from django.db.models import Count, Q, Value
+from django.db.models.functions import Concat, TruncMonth
 from accounts.models import CustomUser
 from .models import Report
 from .forms import ReportForm, ReportStatusForm
@@ -185,9 +185,52 @@ class AdminReportListView(
         return self.request.user.role == CustomUser.Role.ADMIN
 
     def get_queryset(self):
-        return Report.objects.select_related(
-            "resident"
-        ).order_by("-created_at")
+        queryset = Report.objects.select_related("resident").order_by("-created_at")
+        self.all_reports = queryset
+        self.search_query = self.request.GET.get("q", "").strip()
+        self.status_filter = self.request.GET.get("status", "").strip()
+        self.category_filter = self.request.GET.get("category", "").strip()
+
+        if self.search_query:
+            queryset = queryset.annotate(
+                resident_full_name=Concat(
+                    "resident__first_name",
+                    Value(" "),
+                    "resident__last_name",
+                )
+            ).filter(
+                Q(title__icontains=self.search_query)
+                | Q(location__icontains=self.search_query)
+                | Q(resident_full_name__icontains=self.search_query)
+                | Q(resident__first_name__icontains=self.search_query)
+                | Q(resident__last_name__icontains=self.search_query)
+                | Q(resident__username__icontains=self.search_query)
+            )
+
+        valid_statuses = {value for value, _ in Report.Status.choices}
+        valid_categories = {value for value, _ in Report.Category.choices}
+        if self.status_filter in valid_statuses:
+            queryset = queryset.filter(status=self.status_filter)
+        if self.category_filter in valid_categories:
+            queryset = queryset.filter(category=self.category_filter)
+        return queryset.order_by("-created_at")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        reports = self.all_reports
+        context.update({
+            "total_reports": reports.count(),
+            "pending_reports": reports.filter(status=Report.Status.PENDING).count(),
+            "in_progress_reports": reports.filter(status=Report.Status.IN_PROGRESS).count(),
+            "resolved_reports": reports.filter(status=Report.Status.RESOLVED).count(),
+            "search_query": self.search_query,
+            "status_filter": self.status_filter,
+            "category_filter": self.category_filter,
+            "status_choices": Report.Status.choices,
+            "category_choices": Report.Category.choices,
+            "has_filters": bool(self.search_query or self.status_filter or self.category_filter),
+        })
+        return context
 
 
 # ADMIN - UPDATE REPORT STATUS
