@@ -1,205 +1,95 @@
-
-/* General Layout */
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f8fafc;
-    color: #1f2937;
-    margin: 0;
-    padding: 32px;
-}
-
-/* Dashboard Header */
-
-header {
-    margin-bottom: 24px;
-}
-
-header h1 {
-    font-size: 28px;
-    margin-bottom: 8px;
-}
-
-header p {
-    color: #64748b;
-    margin-bottom: 16px;
-}
-
-header a {
-    color: #2563eb;
-    text-decoration: none;
-}
-
-header a:hover {
-    text-decoration: underline;
-}
-
-/* Summary Cards */
-
-.summary-cards {
+/* Analytics page content only. The shared shell, sidebar, header, and footer
+   inherit the finalized Admin Dashboard layout from admin_dashboard.css. */
+.analytics-dashboard-body .analytics-summary {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 16px;
-    margin: 24px 0;
+    gap: 12px;
+    margin: 0 0 14px;
 }
 
-.card {
-    background-color: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 20px;
+.analytics-dashboard-body .summary-card {
+    position: relative;
+    min-width: 0;
+    min-height: 106px;
+    overflow: hidden;
+    padding: 12px 14px;
+    border: 1px solid rgba(36, 51, 61, .06);
+    border-radius: 15px;
+    box-shadow: var(--shadow-sm);
 }
 
-.card h3 {
-    font-size: 14px;
-    font-weight: 500;
-    color: #64748b;
-    margin: 0;
+.analytics-dashboard-body .total-card { background: #e3ddec; }
+.analytics-dashboard-body .pending-card { background: #f8dfbd; }
+.analytics-dashboard-body .progress-card { background: #f3d2c7; }
+.analytics-dashboard-body .resolved-card { background: #d9e5dc; }
+.analytics-dashboard-body .rate-card { background: #d8e8e8; }
+
+.analytics-dashboard-body .summary-icon {
+    position: absolute;
+    top: 12px;
+    right: 13px;
+    display: grid;
+    width: 28px;
+    height: 28px;
+    place-items: center;
+    border-radius: 9px;
+    background: rgba(255, 252, 248, .68);
+    color: var(--primary);
 }
 
-.card h2 {
-    font-size: 32px;
-    margin: 10px 0 0;
-    overflow-wrap: anywhere;
-}
+.analytics-dashboard-body .summary-icon svg { width: 16px; height: 16px; }
+.analytics-dashboard-body .summary-card p { margin: 0 0 2px; color: #42535a; font-size: 11px; }
+.analytics-dashboard-body .summary-card h3 { position: relative; z-index: 1; margin: 0; color: var(--primary); font-size: clamp(20px, 2vw, 25px); line-height: 1.1; overflow-wrap: anywhere; }
+.analytics-dashboard-body .card-wave { position: absolute; right: 0; bottom: -1px; left: 0; width: 100%; height: 25px; fill: var(--primary); }
+.analytics-dashboard-body .card-wave .wave-back { opacity: .055; }
+.analytics-dashboard-body .card-wave .wave-mid { opacity: .075; }
+.analytics-dashboard-body .card-wave .wave-front { opacity: .1; }
 
-/* Status Colors */
-
-.pending {
-    color: #d97706;
-}
-
-.in-progress {
-    color: #2563eb;
-}
-
-.resolved {
-    color: #16a34a;
-}
-
-/* Charts Grid */
-
-.charts-grid {
+.analytics-dashboard-body .charts-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px;
+    gap: 12px;
 }
 
-/* Chart Cards */
-
-.chart-card {
-    background-color: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 24px;
+.analytics-dashboard-body .chart-card {
     min-width: 0;
+    padding: 12px 14px 10px;
+    border: 1px solid #E5DDD2;
+    border-radius: 16px;
+    background: #FFFCF8;
+    box-shadow: var(--shadow-sm);
 }
 
-.chart-card h2 {
-    font-size: 18px;
-    margin-top: 0;
-    margin-bottom: 8px;
-}
+.analytics-dashboard-body .chart-heading { min-height: 40px; margin-bottom: 3px; }
+.analytics-dashboard-body .chart-heading h2 { margin: 0 0 3px; color: var(--primary); font-size: 15px; letter-spacing: -.2px; }
+.analytics-dashboard-body .chart-heading p { margin: 0; color: var(--text-secondary); font-size: 11px; line-height: 1.4; }
+.analytics-dashboard-body .chart-container { position: relative; width: 100%; height: 190px; min-width: 0; }
 
-.chart-card p {
-    font-size: 14px;
-    color: #64748b;
-    margin-bottom: 24px;
-}
-
-/* Doughnut Chart */
-
-.chart-container {
-    position: relative;
-    height: 320px;
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-}
-
-/* Bar and Line Charts */
-
-.bar-chart-container {
-    position: relative;
-    width: 100%;
-    height: 320px;
-}
-
-/* Empty State */
-
-.empty-state {
-    background-color: #ffffff;
-    border: 1px dashed #cbd5e1;
-    border-radius: 12px;
-    padding: 48px 24px;
+.analytics-dashboard-body .empty-state {
+    padding: 34px 20px;
+    border: 1px dashed #C6BEDD;
+    border-radius: 16px;
+    background: #FFFCF8;
     text-align: center;
 }
 
-.empty-state h2 {
-    font-size: 20px;
+.analytics-dashboard-body .empty-state > svg { width: 28px; height: 28px; color: #7565D9; }
+.analytics-dashboard-body .empty-state h2 { margin: 8px 0 4px; color: var(--primary); font-size: 18px; }
+.analytics-dashboard-body .empty-state p { margin: 0; color: var(--text-secondary); font-size: 12px; }
+
+@media (max-width: 1024px) {
+    .analytics-dashboard-body .analytics-summary { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
-.empty-state p {
-    color: #64748b;
+@media (max-width: 768px) {
+    .analytics-dashboard-body .analytics-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .analytics-dashboard-body .charts-grid { grid-template-columns: 1fr; }
+    .analytics-dashboard-body .chart-container { height: 200px; }
 }
 
-/* Tablet Layout */
-
-@media (max-width: 1000px) {
-    .summary-cards {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .charts-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Mobile Layout */
-
-@media (max-width: 600px) {
-    body {
-        padding: 16px;
-    }
-
-    header h1 {
-        font-size: 24px;
-    }
-
-    .summary-cards {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
-    }
-
-    .card {
-        padding: 16px;
-    }
-
-    .card h2 {
-        font-size: 26px;
-    }
-
-    .card:last-child {
-        grid-column: 1 / -1;
-    }
-
-    .chart-card {
-        padding: 16px;
-    }
-
-    .charts-grid {
-        gap: 16px;
-    }
-
-    .chart-container {
-        height: 260px;
-    }
-
-    .bar-chart-container {
-        height: 300px;
-    }
+@media (max-width: 460px) {
+    .analytics-dashboard-body .summary-card { min-height: 98px; padding: 10px; }
+    .analytics-dashboard-body .summary-icon { top: 9px; right: 9px; width: 25px; height: 25px; }
+    .analytics-dashboard-body .summary-card p { max-width: calc(100% - 24px); }
+    .analytics-dashboard-body .chart-card { padding: 12px; }
 }

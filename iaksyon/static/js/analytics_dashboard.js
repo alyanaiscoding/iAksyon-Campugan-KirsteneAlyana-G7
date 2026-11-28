@@ -50,9 +50,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     ],
 
                     backgroundColor: [
-                        "#F59E0B",
-                        "#3B82F6",
-                        "#22C55E"
+                        "#F4C38B",
+                        "#EBA58F",
+                        "#A6BEB1"
                     ],
 
                     borderColor: "#FFFFFF",
@@ -71,8 +71,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         position: "bottom",
 
                         labels: {
-                            padding: 20,
-                            usePointStyle: true
+                            padding: 12,
+                            usePointStyle: true,
+                            boxWidth: 8,
+                            boxHeight: 8,
+                            font: { size: 11 }
                         }
                     }
                 }
@@ -94,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 datasets: [{
                     label: "Number of Reports",
                     data: getData("category-counts"),
-                    backgroundColor: "#3B82F6",
+                    backgroundColor: "#7565D9",
                     borderRadius: 6,
                     maxBarThickness: 60
                 }]
@@ -113,11 +116,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 scales: {
                     y: {
                         beginAtZero: true,
+                        grid: { color: "rgba(25, 75, 89, 0.08)", drawBorder: false },
 
                         ticks: {
-                            precision: 0
+                            precision: 0,
+                            color: "#64757a",
+                            font: { size: 10 }
                         }
-                    }
+                    },
+                    x: { grid: { display: false }, ticks: { color: "#64757a", font: { size: 10 } } }
                 }
             }
         });
@@ -137,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 datasets: [{
                     label: "Number of Reports",
                     data: getData("location-counts"),
-                    backgroundColor: "#14B8A6",
+                    backgroundColor: "#B9634E",
                     borderRadius: 6,
                     maxBarThickness: 35
                 }]
@@ -157,11 +164,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 scales: {
                     x: {
                         beginAtZero: true,
+                        grid: { color: "rgba(25, 75, 89, 0.08)", drawBorder: false },
 
                         ticks: {
-                            precision: 0
+                            precision: 0,
+                            color: "#64757a",
+                            font: { size: 10 }
                         }
-                    }
+                    },
+                    y: { grid: { display: false }, ticks: { color: "#64757a", font: { size: 10 } } }
                 }
             }
         });
@@ -172,22 +183,26 @@ document.addEventListener("DOMContentLoaded", () => {
     const monthlyChart = document.getElementById("monthlyChart");
 
     if (monthlyChart) {
+        const monthlyLabels = getData("monthly-labels");
+
         new Chart(monthlyChart, {
             type: "line",
 
             data: {
-                labels: getData("monthly-labels"),
+                labels: monthlyLabels,
 
                 datasets: [{
                     label: "Submitted Reports",
                     data: getData("monthly-counts"),
-                    borderColor: "#16A34A",
-                    backgroundColor: "rgba(22, 163, 74, 0.12)",
+                    borderColor: "#194B59",
+                    backgroundColor: "rgba(25, 75, 89, 0.12)",
                     borderWidth: 3,
                     tension: 0,
                     fill: true,
-                    pointRadius: 5,
-                    pointHoverRadius: 7
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: "#194B59",
+                    pointBorderColor: "#fffdf9"
                 }]
             },
 
@@ -204,10 +219,18 @@ document.addEventListener("DOMContentLoaded", () => {
                 scales: {
                     y: {
                         beginAtZero: true,
+                        grid: { color: "rgba(25, 75, 89, 0.08)", drawBorder: false },
 
                         ticks: {
-                            precision: 0
+                            precision: 0,
+                            color: "#64757a",
+                            font: { size: 10 }
                         }
+                    },
+                    x: {
+                        offset: monthlyLabels.length === 1,
+                        grid: { display: false },
+                        ticks: { color: "#64757a", font: { size: 10 } }
                     }
                 }
             }

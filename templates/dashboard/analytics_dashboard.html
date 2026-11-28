@@ -1,178 +1,53 @@
-
+{% extends "layouts/dashboard.html" %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+{% block title %}iAksyon | Analytics Dashboard{% endblock %}
+{% block body_class %}dashboard-body admin-dashboard-body analytics-dashboard-body{% endblock %}
+{% block dashboard_css %}<link rel="stylesheet" href="{% static 'css/admin_dashboard.css' %}"><link rel="stylesheet" href="{% static 'css/analytics_dashboard.css' %}">{% endblock %}
+{% block page_title %}Analytics Dashboard{% endblock %}
+{% block page_subtitle %}Understand community concerns through data-driven insights.{% endblock %}
 
-    <title>Analytics Dashboard | iAksyon</title>
+{% block dashboard_content %}
+<section class="analytics-summary" aria-label="Report summary">
+    <article class="summary-card total-card">
+        <div class="summary-icon"><i data-lucide="files"></i></div><p>Total Reports</p><h3>{{ total_reports }}</h3>
+        <svg class="card-wave" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path class="wave-back" d="M0 29 Q48 8 98 22 T200 14 V40 H0Z"/><path class="wave-mid" d="M0 33 Q48 14 100 28 T200 21 V40 H0Z"/><path class="wave-front" d="M0 36 Q55 23 110 33 T200 29 V40 H0Z"/></svg>
+    </article>
+    <article class="summary-card pending-card">
+        <div class="summary-icon"><i data-lucide="clock-3"></i></div><p>Pending</p><h3>{{ pending_reports }}</h3>
+        <svg class="card-wave" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path class="wave-back" d="M0 29 Q48 8 98 22 T200 14 V40 H0Z"/><path class="wave-mid" d="M0 33 Q48 14 100 28 T200 21 V40 H0Z"/><path class="wave-front" d="M0 36 Q55 23 110 33 T200 29 V40 H0Z"/></svg>
+    </article>
+    <article class="summary-card progress-card">
+        <div class="summary-icon"><i data-lucide="refresh-cw"></i></div><p>In Progress</p><h3>{{ in_progress_reports }}</h3>
+        <svg class="card-wave" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path class="wave-back" d="M0 29 Q48 8 98 22 T200 14 V40 H0Z"/><path class="wave-mid" d="M0 33 Q48 14 100 28 T200 21 V40 H0Z"/><path class="wave-front" d="M0 36 Q55 23 110 33 T200 29 V40 H0Z"/></svg>
+    </article>
+    <article class="summary-card resolved-card">
+        <div class="summary-icon"><i data-lucide="circle-check"></i></div><p>Resolved</p><h3>{{ resolved_reports }}</h3>
+        <svg class="card-wave" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path class="wave-back" d="M0 29 Q48 8 98 22 T200 14 V40 H0Z"/><path class="wave-mid" d="M0 33 Q48 14 100 28 T200 21 V40 H0Z"/><path class="wave-front" d="M0 36 Q55 23 110 33 T200 29 V40 H0Z"/></svg>
+    </article>
+    <article class="summary-card rate-card">
+        <div class="summary-icon"><i data-lucide="chart-no-axes-combined"></i></div><p>Resolution Rate</p><h3>{{ resolution_rate }}%</h3>
+        <svg class="card-wave" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path class="wave-back" d="M0 29 Q48 8 98 22 T200 14 V40 H0Z"/><path class="wave-mid" d="M0 33 Q48 14 100 28 T200 21 V40 H0Z"/><path class="wave-front" d="M0 36 Q55 23 110 33 T200 29 V40 H0Z"/></svg>
+    </article>
+</section>
 
-    <link rel="stylesheet"
-          href="{% static 'css/analytics_dashboard.css' %}">
+{% if total_reports > 0 %}
+<div class="charts-grid">
+    <section class="chart-card"><div class="chart-heading"><h2>Report Status Distribution</h2><p>Overview of the current status of submitted reports.</p></div><div class="chart-container"><canvas id="statusChart" data-pending="{{ pending_reports }}" data-in-progress="{{ in_progress_reports }}" data-resolved="{{ resolved_reports }}"></canvas></div></section>
+    <section class="chart-card"><div class="chart-heading"><h2>Reports by Category</h2><p>Number of submitted reports per category.</p></div><div class="chart-container"><canvas id="categoryChart"></canvas></div></section>
+    <section class="chart-card"><div class="chart-heading"><h2>Reports by Location</h2><p>Top 10 locations with the highest number of reports.</p></div><div class="chart-container"><canvas id="locationChart"></canvas></div></section>
+    <section class="chart-card"><div class="chart-heading"><h2>Monthly Report Trends</h2><p>Number of newly submitted reports per month.</p></div><div class="chart-container"><canvas id="monthlyChart"></canvas></div></section>
+</div>
+{% else %}
+<div class="empty-state"><i data-lucide="chart-no-axes-combined"></i><h2>No reports available yet</h2><p>Analytics will appear once residents submit community issue reports.</p></div>
+{% endif %}
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
-</head>
+{{ category_labels|json_script:"category-labels" }}
+{{ category_counts|json_script:"category-counts" }}
+{{ location_labels|json_script:"location-labels" }}
+{{ location_counts|json_script:"location-counts" }}
+{{ monthly_labels|json_script:"monthly-labels" }}
+{{ monthly_counts|json_script:"monthly-counts" }}
+{% endblock %}
 
-<body>
-
-    <header>
-        <h1>Analytics Dashboard</h1>
-
-        <p>
-            Monitor community issues and report
-            resolution performance.
-        </p>
-
-        <a href="{% url 'admin_panel' %}">
-            Back to Dashboard
-        </a>
-    </header>
-
-    <main>
-
-        <!-- Summary Cards -->
-        <div class="summary-cards">
-
-            <div class="card">
-                <h3>Total Reports</h3>
-                <h2>{{ total_reports }}</h2>
-            </div>
-
-            <div class="card">
-                <h3>Pending</h3>
-                <h2 class="pending">
-                    {{ pending_reports }}
-                </h2>
-            </div>
-
-            <div class="card">
-                <h3>In Progress</h3>
-                <h2 class="in-progress">
-                    {{ in_progress_reports }}
-                </h2>
-            </div>
-
-            <div class="card">
-                <h3>Resolved</h3>
-                <h2 class="resolved">
-                    {{ resolved_reports }}
-                </h2>
-            </div>
-
-            <div class="card">
-                <h3>Resolution Rate</h3>
-                <h2 class="resolved">
-                    {{ resolution_rate }}%
-                </h2>
-            </div>
-
-        </div>
-
-        {% if total_reports > 0 %}
-
-        <div class="charts-grid">
-
-            <!-- Status Distribution -->
-            <section class="chart-card">
-
-                <h2>Report Status Distribution</h2>
-
-                <p>
-                    Overview of the current status
-                    of submitted reports.
-                </p>
-
-                <div class="chart-container">
-
-                    <canvas id="statusChart"
-                        data-pending="{{ pending_reports }}"
-                        data-in-progress="{{ in_progress_reports }}"
-                        data-resolved="{{ resolved_reports }}">
-                    </canvas>
-
-                </div>
-
-            </section>
-
-            <!-- Reports by Category -->
-            <section class="chart-card">
-
-                <h2>Reports by Category</h2>
-
-                <p>
-                    Number of submitted reports
-                    per category.
-                </p>
-
-                <div class="bar-chart-container">
-                    <canvas id="categoryChart"></canvas>
-                </div>
-
-            </section>
-
-            <!-- Reports by Location -->
-            <section class="chart-card">
-
-                <h2>Reports by Location</h2>
-
-                <p>
-                    Top 10 locations with the
-                    highest number of reports.
-                </p>
-
-                <div class="bar-chart-container">
-                    <canvas id="locationChart"></canvas>
-                </div>
-
-            </section>
-
-            <!-- Monthly Report Trends -->
-            <section class="chart-card">
-
-                <h2>Monthly Report Trends</h2>
-
-                <p>
-                    Number of newly submitted
-                    reports per month.
-                </p>
-
-                <div class="bar-chart-container">
-                    <canvas id="monthlyChart"></canvas>
-                </div>
-
-            </section>
-
-        </div>
-
-        {% else %}
-
-        <div class="empty-state">
-            <h2>No reports available yet</h2>
-            <p>
-                Analytics will appear once residents
-                submit community issue reports.
-            </p>
-        </div>
-
-        {% endif %}
-
-    </main>
-
-    <!-- Analytics Data -->
-    {{ category_labels|json_script:"category-labels" }}
-    {{ category_counts|json_script:"category-counts" }}
-
-    {{ location_labels|json_script:"location-labels" }}
-    {{ location_counts|json_script:"location-counts" }}
-
-    {{ monthly_labels|json_script:"monthly-labels" }}
-    {{ monthly_counts|json_script:"monthly-counts" }}
-
-    <!-- External JavaScript -->
-    <script src="{% static 'js/analytics_dashboard.js' %}"></script>
-
-</body>
-</html>
+{% block dashboard_js %}<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script><script src="{% static 'js/analytics_dashboard.js' %}"></script>{% endblock %}
