@@ -11,6 +11,9 @@ from .models import Report
 from .forms import ReportForm, ReportStatusForm
 from django.views.generic import UpdateView
 from django.views.generic import DeleteView 
+from django.contrib.auth.decorators import login_required
+from django.http import FileResponse, Http404
+from django.shortcuts import get_object_or_404
 
 
 class ReportCreateView(
@@ -145,3 +148,18 @@ class AdminReportUpdateView(
             "Report status updated successfully!"
         )
         return response
+
+@login_required
+def report_photo(request, pk):
+    report = get_object_or_404(Report, pk=pk)
+
+    if request.user.role != "ADMIN" and report.resident_id != request.user.id:
+        raise Http404("Photo not found.")
+
+    if not report.photo:
+        raise Http404("No photo attached.")
+
+    try:
+        return FileResponse(report.photo.open("rb"))
+    except FileNotFoundError:
+        raise Http404("Photo file not found.")

@@ -6,21 +6,22 @@
     <title>Report Details | iAksyon</title>
 </head>
 <body>
-
     <h1>Report Details</h1>
-
     <p><strong>Title:</strong> {{ object.title }}</p>
-
     <p><strong>Resident:</strong> {{ object.resident.username }}</p>
-
     <p><strong>Description:</strong> {{ object.description }}</p>
-
     <p><strong>Category:</strong> {{ object.get_category_display }}</p>
-
     <p><strong>Location:</strong> {{ object.location }}</p>
+    <p><strong>Attached Photo:</strong></p>
 
+    {% if object.photo %}
+        <img src="{% url 'report_photo' object.pk %}"
+            alt="Report photo"
+            style="max-width: 400px; border-radius: 8px;">
+    {% else %}
+        <p>No photo attached.</p>
+    {% endif %}
     <p><strong>Current Status:</strong> {{ object.get_status_display }}</p>
-
     <p><strong>Date Submitted:</strong> {{ object.created_at }}</p>
 
     <hr>

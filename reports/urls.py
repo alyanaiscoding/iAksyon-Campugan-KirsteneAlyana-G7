@@ -1,3 +1,4 @@
+from .views import report_photo
 from django.urls import path
 from .views import (
     ReportCreateView,
@@ -39,4 +40,5 @@ urlpatterns = [
         AdminReportUpdateView.as_view(),
         name="admin_report_update"
     ),
+    path("<int:pk>/photo/", report_photo, name="report_photo"),
 ]

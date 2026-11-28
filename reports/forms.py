@@ -1,5 +1,9 @@
+
 from django import forms
 from .models import Report
+
+class ReportPhotoWidget(forms.ClearableFileInput):
+    template_name = "reports/widgets/photo_input.html"
 
 
 class ReportForm(forms.ModelForm):
@@ -28,18 +32,20 @@ class ReportForm(forms.ModelForm):
             }),
         }
 
-def clean_photo(self):
-    photo = self.cleaned_data.get("photo")
+    def clean_photo(self):
+        photo = self.cleaned_data.get("photo")
 
-    if photo:
-        if photo.size > 5 * 1024 * 1024:
-            raise forms.ValidationError(
-                "Photo size must not exceed 5 MB."
-            )
+        if photo:
+            if photo.size > 5 * 1024 * 1024:
+                raise forms.ValidationError(
+                    "Photo size must not exceed 5 MB."
+                )
 
-    return photo
+        return photo
+
 
 class ReportStatusForm(forms.ModelForm):
+
     class Meta:
         model = Report
         fields = ["status"]
