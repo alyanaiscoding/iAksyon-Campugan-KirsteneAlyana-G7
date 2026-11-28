@@ -1,45 +1,69 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Report Details | iAksyon</title>
-</head>
-<body>
-    <h1>Report Details</h1>
-    <p><strong>Title:</strong> {{ object.title }}</p>
-    <p><strong>Resident:</strong> {{ object.resident.username }}</p>
-    <p><strong>Description:</strong> {{ object.description }}</p>
-    <p><strong>Category:</strong> {{ object.get_category_display }}</p>
-    <p><strong>Location:</strong> {{ object.location }}</p>
-    <p><strong>Attached Photo:</strong></p>
+{% extends "layouts/dashboard.html" %}
+{% load static %}
 
-    {% if object.photo %}
-        <img src="{% url 'report_photo' object.pk %}"
-            alt="Report photo"
-            style="max-width: 400px; border-radius: 8px;">
-    {% else %}
-        <p>No photo attached.</p>
-    {% endif %}
-    <p><strong>Current Status:</strong> {{ object.get_status_display }}</p>
-    <p><strong>Date Submitted:</strong> {{ object.created_at }}</p>
+{% block title %}iAksyon | Report Details{% endblock %}
+{% block body_class %}dashboard-body admin-dashboard-body admin-report-detail-body{% endblock %}
+{% block dashboard_css %}<link rel="stylesheet" href="{% static 'css/admin_report_detail.css' %}">{% endblock %}
+{% block page_title %}Report Details{% endblock %}
+{% block page_subtitle %}Review community concerns and update their status.{% endblock %}
 
-    <hr>
+{% block dashboard_content %}
+<main class="admin-report-detail-page">
+    <a class="report-back-link" href="{% url 'admin_report_list' %}"><i data-lucide="arrow-left" aria-hidden="true"></i>Back to Manage Reports</a>
 
-    <h2>Update Report Status</h2>
+    <div class="report-detail-grid">
+        <article class="report-information-card" aria-labelledby="report-title">
+            <div class="report-card-heading">
+                <div>
+                    <span class="report-eyebrow"><i data-lucide="file-text" aria-hidden="true"></i>Community concern</span>
+                    <h2 id="report-title">{{ object.title }}</h2>
+                </div>
+                <span class="status-pill status-{{ object.status|lower }}">{{ object.get_status_display }}</span>
+            </div>
 
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
+            <dl class="report-facts">
+                <div class="report-fact"><dt><i data-lucide="user-round" aria-hidden="true"></i>Resident</dt><dd>{{ object.resident.get_full_name|default:object.resident.username }}</dd></div>
+                <div class="report-fact"><dt><i data-lucide="tag" aria-hidden="true"></i>Category</dt><dd>{{ object.get_category_display }}</dd></div>
+                <div class="report-fact"><dt><i data-lucide="map-pin" aria-hidden="true"></i>Location</dt><dd>{{ object.location }}</dd></div>
+                <div class="report-fact"><dt><i data-lucide="calendar-days" aria-hidden="true"></i>Date submitted</dt><dd>{{ object.created_at|date:"M d, Y · g:i A" }}</dd></div>
+                <div class="report-fact"><dt><i data-lucide="history" aria-hidden="true"></i>Last updated</dt><dd>{{ object.updated_at|date:"M d, Y · g:i A" }}</dd></div>
+            </dl>
 
-        <button type="submit">Update Status</button>
-    </form>
+            <section class="report-description" aria-labelledby="description-heading">
+                <h3 id="description-heading"><i data-lucide="align-left" aria-hidden="true"></i>Description</h3>
+                <p>{{ object.description|linebreaksbr }}</p>
+            </section>
 
-    <br>
+            <section class="report-attachment" aria-labelledby="attachment-heading">
+                <h3 id="attachment-heading"><i data-lucide="image" aria-hidden="true"></i>Attached photo</h3>
+                {% if object.photo %}
+                    <a class="report-attachment-preview" href="{% url 'report_photo' object.pk %}" target="_blank" rel="noopener">
+                        <img class="report-attachment-image" src="{% url 'report_photo' object.pk %}" alt="Photo attached to {{ object.title }}">
+                    </a>
+                {% else %}
+                    <div class="report-photo-empty"><i data-lucide="image-off" aria-hidden="true"></i><span>No photo attached to this report.</span></div>
+                {% endif %}
+            </section>
+        </article>
 
-    <a href="{% url 'admin_report_list' %}">
-        Back to Reports
-    </a>
+        <aside class="status-management-card" aria-labelledby="status-heading">
+            <span class="status-card-icon"><i data-lucide="clipboard-check" aria-hidden="true"></i></span>
+            <h2 id="status-heading">Update Status</h2>
+            <p class="status-current-label">Current status</p>
+            <span class="status-pill status-{{ object.status|lower }}">{{ object.get_status_display }}</span>
 
-</body>
-</html>
+            <form class="status-update-form" method="post">
+                {% csrf_token %}
+                <div class="status-field">
+                    <label for="{{ form.status.id_for_label }}">New status</label>
+                    <div class="status-select-wrap">{{ form.status }}<i data-lucide="chevron-down" aria-hidden="true"></i></div>
+                    {% if form.status.errors %}<div class="status-field-errors" role="alert">{{ form.status.errors }}</div>{% endif %}
+                </div>
+                {% if form.non_field_errors %}<div class="status-field-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+                <button class="status-submit-button" type="submit"><i data-lucide="check" aria-hidden="true"></i>Update Status</button>
+            </form>
+            <p class="status-supporting-text"><i data-lucide="info" aria-hidden="true"></i>Status changes will be reflected in the resident’s report tracking page.</p>
+        </aside>
+    </div>
+</main>
+{% endblock %}
