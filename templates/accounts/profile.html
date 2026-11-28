@@ -1,34 +1,80 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>My Profile | iAksyon</title>
-</head>
-<body>
+{% extends "layouts/dashboard.html" %}
+{% load static %}
 
-    <h1>iAksyon</h1>
-    <h2>My Profile</h2>
+{% block title %}iAksyon | My Profile{% endblock %}
+{% block body_class %}dashboard-body resident-dashboard-body profile-page-body{% endblock %}
 
-    <p>Username: {{ user.username }}</p>
-    <p>Role: {{ user.get_role_display }}</p>
+{% block dashboard_css %}
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
 
-    <hr>
+{% block page_title %}My Profile{% endblock %}
+{% block page_subtitle %}Manage your personal information and account details.{% endblock %}
 
-    <h3>Edit Personal Information</h3>
+{% block dashboard_content %}
+<div class="profile-page">
+    <section class="profile-overview" aria-label="Resident profile overview">
+        <div class="profile-overview-content">
+            <div class="profile-avatar" aria-hidden="true">
+                {% if user.first_name or user.last_name %}{{ user.first_name|default:user.username|slice:":1"|upper }}{{ user.last_name|slice:":1"|upper }}{% else %}{{ user.username|slice:":2"|upper }}{% endif %}
+            </div>
+            <div class="profile-overview-details">
+                <span class="profile-overview-label">RESIDENT ACCOUNT</span>
+                <h2>{% if user.first_name or user.last_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %}</h2>
+                <span class="profile-role-badge"><i data-lucide="user-round" aria-hidden="true"></i>{{ user.get_role_display }}</span>
+            </div>
+        </div>
+        <svg class="profile-waves" viewBox="0 0 760 150" preserveAspectRatio="none" aria-hidden="true">
+            <path class="profile-wave-back" d="M0 74C118 28 214 34 326 78s187 48 287 5 106-36 147-18v85H0Z"/>
+            <path class="profile-wave-front" d="M0 99c123-47 213-39 329 1s190 40 289 5 105-30 142-17v62H0Z"/>
+        </svg>
+    </section>
 
-    <form method="POST">
-        {% csrf_token %}
+    <section class="profile-form-card ui-card" aria-labelledby="profile-form-heading">
+        <div class="profile-card-heading">
+            <div class="profile-heading-icon" aria-hidden="true"><i data-lucide="contact-round"></i></div>
+            <div>
+                <h2 id="profile-form-heading">Personal Information</h2>
+                <p>Keep your account information up to date.</p>
+            </div>
+        </div>
 
-        {{ form.as_p }}
+        <form method="post" class="profile-form" novalidate>
+            {% csrf_token %}
+            {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
 
-        <button type="submit">Save Changes</button>
-    </form>
+            <div class="profile-fields-grid">
+                <div class="form-group">
+                    <label for="{{ form.first_name.id_for_label }}">First name</label>
+                    {{ form.first_name }}
+                    {% for error in form.first_name.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.last_name.id_for_label }}">Last name</label>
+                    {{ form.last_name }}
+                    {% for error in form.last_name.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">Email address</label>
+                    {{ form.email }}
+                    {% for error in form.email.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.contact_number.id_for_label }}">Contact number</label>
+                    {{ form.contact_number }}
+                    {% for error in form.contact_number.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+                </div>
+                <div class="form-group profile-role-field">
+                    <label for="profile-role">Account role</label>
+                    <input id="profile-role" type="text" value="{{ user.get_role_display }}" readonly aria-readonly="true">
+                </div>
+            </div>
 
-    <br>
-
-    <a href="{% url 'resident_dashboard' %}">
-        Back to Dashboard
-    </a>
-
-</body>
-</html>
+            <div class="profile-form-actions">
+                <a href="{% url 'resident_dashboard' %}" class="btn btn-outline"><i data-lucide="x" aria-hidden="true"></i>Cancel</a>
+                <button type="submit" class="btn btn-primary"><i data-lucide="check" aria-hidden="true"></i>Save Changes</button>
+            </div>
+        </form>
+    </section>
+</div>
+{% endblock %}

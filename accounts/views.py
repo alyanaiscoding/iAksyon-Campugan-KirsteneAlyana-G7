@@ -1,6 +1,7 @@
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib import messages
 from .forms import CustomeUserCreationForm, ProfileUpdateForm
 from .models import CustomUser
 
@@ -26,3 +27,8 @@ class ProfileUpdateView(
 
     def get_object(self, queryset=None):
         return self.request.user
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, "Your profile was updated successfully.")
+        return response
