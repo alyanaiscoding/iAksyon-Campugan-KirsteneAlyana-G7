@@ -30,6 +30,10 @@ class ReportForm(forms.ModelForm):
             "location": forms.TextInput(attrs={
                 "placeholder": "Enter the location of the issue"
             }),
+            "photo": ReportPhotoWidget(attrs={
+                "accept": "image/*",
+                "class": "photo-file-input",
+            }),
         }
 
     def clean_photo(self):

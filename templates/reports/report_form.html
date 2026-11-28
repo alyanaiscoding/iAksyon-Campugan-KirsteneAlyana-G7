@@ -1,29 +1,110 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Submit Report | iAksyon</title>
-</head>
-<body>
+{% extends "layouts/dashboard.html" %}
+{% load static %}
 
-    <h1>Submit a Report</h1>
+{% block title %}iAksyon | Create Report{% endblock %}
 
-    <p>Report an issue in your community.</p>
+{% block body_class %}dashboard-body resident-dashboard-body{% endblock %}
 
-    <form method="POST" enctype="multipart/form-data">
+{% block dashboard_css %}
+<link rel="stylesheet" href="{% static 'css/report_form.css' %}">
+{% endblock %}
+
+{% block page_title %}Create Report{% endblock %}
+{% block page_subtitle %}Help improve your community by reporting local concerns.{% endblock %}
+
+{% block dashboard_content %}
+<section class="report-form-card ui-card" aria-labelledby="report-form-heading">
+    <div class="report-form-intro">
+        <div class="report-form-icon" aria-hidden="true"><i data-lucide="file-plus-2"></i></div>
+        <div>
+            <h2 id="report-form-heading">Tell us what’s happening</h2>
+            <p>Share a few details so your community team can follow up.</p>
+        </div>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data" class="report-form" novalidate>
         {% csrf_token %}
+        {% if form.non_field_errors %}<div class="form-errors" role="alert">{{ form.non_field_errors }}</div>{% endif %}
 
-        {{ form.as_p }}
+        <div class="form-group">
+            <label for="{{ form.title.id_for_label }}">Report Title <span class="required-mark">Required</span></label>
+            {{ form.title }}
+            {% for error in form.title.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+        </div>
 
-        <button type="submit">Submit Report</button>
+        <div class="report-form-row">
+            <div class="form-group">
+                <label for="{{ form.category.id_for_label }}">Category <span class="required-mark">Required</span></label>
+                {{ form.category }}
+                {% for error in form.category.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.location.id_for_label }}">Location <span class="required-mark">Required</span></label>
+                <div class="field-with-icon"><i data-lucide="map-pin" aria-hidden="true"></i>{{ form.location }}</div>
+                {% for error in form.location.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.description.id_for_label }}">Description <span class="required-mark">Required</span></label>
+            {{ form.description }}
+            <small class="field-hint">Include details that will help the team understand and locate the issue.</small>
+            {% for error in form.description.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+        </div>
+
+        <div class="form-group photo-group">
+            <div class="photo-label-row">
+                <label for="{{ form.photo.id_for_label }}">Photo Attachment <span class="optional-mark">Optional</span></label>
+                <span class="photo-limit">Image files · up to 5 MB</span>
+            </div>
+            <label class="photo-dropzone" for="{{ form.photo.id_for_label }}">
+                <span class="upload-icon"><i data-lucide="image-up" aria-hidden="true"></i></span>
+                <span class="upload-copy"><strong class="upload-prompt">Choose a photo</strong><span>Attach an image of the concern</span></span>
+                <span class="upload-browse">Browse</span>
+                {{ form.photo }}
+                <span class="photo-preview" hidden><img alt="Selected photo preview"><span class="photo-filename"></span></span>
+            </label>
+            {% for error in form.photo.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+        </div>
+
+        <div class="report-form-actions">
+            <a href="{% url 'resident_dashboard' %}" class="btn btn-outline"><i data-lucide="arrow-left" aria-hidden="true"></i>Cancel</a>
+            <button type="submit" class="btn btn-primary"><i data-lucide="send" aria-hidden="true"></i>Submit Report</button>
+        </div>
     </form>
+</section>
+{% endblock %}
 
-    <br>
-
-    <a href="{% url 'resident_dashboard' %}">
-        Back to Dashboard
-    </a>
-
-</body>
-</html>
+{% block dashboard_js %}
+<script>
+(() => {
+    const input = document.querySelector('.photo-dropzone input[type="file"]');
+    const preview = document.querySelector('.photo-preview');
+    if (!input || !preview) return;
+    const image = preview.querySelector('img');
+    const filename = preview.querySelector('.photo-filename');
+    const prompt = document.querySelector('.upload-prompt');
+    let previewUrl;
+    input.addEventListener('change', () => {
+        const file = input.files && input.files[0];
+        if (previewUrl) URL.revokeObjectURL(previewUrl);
+        if (!file) {
+            preview.hidden = true;
+            image.hidden = true;
+            prompt.textContent = 'Choose a photo';
+            return;
+        }
+        filename.textContent = file.name;
+        prompt.textContent = 'Photo selected';
+        preview.hidden = false;
+        if (file.type.startsWith('image/')) {
+            previewUrl = URL.createObjectURL(file);
+            image.src = previewUrl;
+            image.hidden = false;
+        } else {
+            image.hidden = true;
+        }
+    });
+})();
+</script>
+{% endblock %}
