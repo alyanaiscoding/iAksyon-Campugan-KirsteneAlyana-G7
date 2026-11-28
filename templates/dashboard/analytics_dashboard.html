@@ -1,0 +1,178 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Analytics Dashboard | iAksyon</title>
+
+    <link rel="stylesheet"
+          href="{% static 'css/analytics_dashboard.css' %}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.9/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+
+    <header>
+        <h1>Analytics Dashboard</h1>
+
+        <p>
+            Monitor community issues and report
+            resolution performance.
+        </p>
+
+        <a href="{% url 'admin_panel' %}">
+            Back to Dashboard
+        </a>
+    </header>
+
+    <main>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+
+            <div class="card">
+                <h3>Total Reports</h3>
+                <h2>{{ total_reports }}</h2>
+            </div>
+
+            <div class="card">
+                <h3>Pending</h3>
+                <h2 class="pending">
+                    {{ pending_reports }}
+                </h2>
+            </div>
+
+            <div class="card">
+                <h3>In Progress</h3>
+                <h2 class="in-progress">
+                    {{ in_progress_reports }}
+                </h2>
+            </div>
+
+            <div class="card">
+                <h3>Resolved</h3>
+                <h2 class="resolved">
+                    {{ resolved_reports }}
+                </h2>
+            </div>
+
+            <div class="card">
+                <h3>Resolution Rate</h3>
+                <h2 class="resolved">
+                    {{ resolution_rate }}%
+                </h2>
+            </div>
+
+        </div>
+
+        {% if total_reports > 0 %}
+
+        <div class="charts-grid">
+
+            <!-- Status Distribution -->
+            <section class="chart-card">
+
+                <h2>Report Status Distribution</h2>
+
+                <p>
+                    Overview of the current status
+                    of submitted reports.
+                </p>
+
+                <div class="chart-container">
+
+                    <canvas id="statusChart"
+                        data-pending="{{ pending_reports }}"
+                        data-in-progress="{{ in_progress_reports }}"
+                        data-resolved="{{ resolved_reports }}">
+                    </canvas>
+
+                </div>
+
+            </section>
+
+            <!-- Reports by Category -->
+            <section class="chart-card">
+
+                <h2>Reports by Category</h2>
+
+                <p>
+                    Number of submitted reports
+                    per category.
+                </p>
+
+                <div class="bar-chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+
+            </section>
+
+            <!-- Reports by Location -->
+            <section class="chart-card">
+
+                <h2>Reports by Location</h2>
+
+                <p>
+                    Top 10 locations with the
+                    highest number of reports.
+                </p>
+
+                <div class="bar-chart-container">
+                    <canvas id="locationChart"></canvas>
+                </div>
+
+            </section>
+
+            <!-- Monthly Report Trends -->
+            <section class="chart-card">
+
+                <h2>Monthly Report Trends</h2>
+
+                <p>
+                    Number of newly submitted
+                    reports per month.
+                </p>
+
+                <div class="bar-chart-container">
+                    <canvas id="monthlyChart"></canvas>
+                </div>
+
+            </section>
+
+        </div>
+
+        {% else %}
+
+        <div class="empty-state">
+            <h2>No reports available yet</h2>
+            <p>
+                Analytics will appear once residents
+                submit community issue reports.
+            </p>
+        </div>
+
+        {% endif %}
+
+    </main>
+
+    <!-- Analytics Data -->
+    {{ category_labels|json_script:"category-labels" }}
+    {{ category_counts|json_script:"category-counts" }}
+
+    {{ location_labels|json_script:"location-labels" }}
+    {{ location_counts|json_script:"location-counts" }}
+
+    {{ monthly_labels|json_script:"monthly-labels" }}
+    {{ monthly_counts|json_script:"monthly-counts" }}
+
+    <!-- External JavaScript -->
+    <script src="{% static 'js/analytics_dashboard.js' %}"></script>
+
+</body>
+</html>
