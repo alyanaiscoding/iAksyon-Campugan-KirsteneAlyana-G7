@@ -33,6 +33,12 @@ class Report(models.Model):
 
     location = models.CharField(max_length=255)
 
+    photo = models.ImageField(
+    upload_to="reports/photos/",
+    blank=True,
+    null=True
+    )
+
     status = models.CharField(
         max_length=20,
         choices=Status.choices,
